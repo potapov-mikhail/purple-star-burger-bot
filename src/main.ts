@@ -1,18 +1,12 @@
-import { Telegraf } from 'telegraf';
-import { config } from 'dotenv';
+import { createApplication } from './core/app/app.factory';
 
-const TOKEN = (config().parsed as any)['TG_BOT_TOKEN'];
+async function bootstrap(): Promise<void> {
+	const app = createApplication();
+	await app.init();
 
-if (!TOKEN) {
-	throw new Error('TG_BOT_TOKEN is not defined');
+	process.on('exit', async () => {
+		await app.close();
+	});
 }
 
-const bot = new Telegraf(TOKEN);
-
-bot.start((ctx) => {
-	ctx.reply('Hello!');
-});
-
-bot.launch();
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
+bootstrap();
