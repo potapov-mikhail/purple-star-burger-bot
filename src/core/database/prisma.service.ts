@@ -4,6 +4,7 @@ import { DI_TOKENS } from '../di/tokens';
 import { ILoggerService } from '../logger/logger.interface';
 import { IPrismaService } from '../database/prisma.interface';
 import 'reflect-metadata';
+
 @injectable()
 export class PrismaService implements IPrismaService {
 	readonly client: PrismaClient;

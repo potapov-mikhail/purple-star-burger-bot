@@ -1,4 +1,4 @@
-import { createApplication } from './core/app/app.factory';
+import { createApplication } from './app/app.factory';
 
 async function bootstrap(): Promise<void> {
 	const app = createApplication();

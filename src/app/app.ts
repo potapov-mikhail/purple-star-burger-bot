@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import { inject, injectable } from 'inversify';
-import { DI_TOKENS } from '../di/tokens';
-import { IApplication } from '../app/app.interface';
-import { IConfigService } from '../config/config.interface';
-import { IPrismaService } from '../database/prisma.interface';
-import { ILoggerService } from '../logger/logger.interface';
-import { ITelegramBot } from '../../tg-bot/telegram-bot.interface';
+import { DI_TOKENS } from '../core/di/tokens';
+import { IApplication } from './app.interface';
+import { IConfigService } from '../core/config/config.interface';
+import { IPrismaService } from '../core/database/prisma.interface';
+import { ILoggerService } from '../core/logger/logger.interface';
+import { ITelegramBot } from '../telegram-bot/telegram-bot.interface';
 
 @injectable()
 export class Application implements IApplication {
