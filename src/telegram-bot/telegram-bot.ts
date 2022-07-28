@@ -26,10 +26,7 @@ export class TelegramBot implements ITelegramBot {
 		return this.telegraf.launch();
 	}
 
-	stop(): Promise<void> {
-		return new Promise((resolve) => {
-			this.telegraf.stop();
-			resolve();
-		});
+	stop(): void {
+		this.telegraf.stop();
 	}
 }
