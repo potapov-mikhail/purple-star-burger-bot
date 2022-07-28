@@ -11,21 +11,22 @@ export class PrismaService implements IPrismaService {
 
 	constructor(@inject(DI_TOKENS.LoggerService) private readonly loggerService: ILoggerService) {
 		this.client = new PrismaClient();
+		this.loggerService.setPrefix(this.constructor.name);
 	}
 
 	async connect(): Promise<void> {
 		try {
 			await this.client.$connect();
-			this.loggerService.log('[PrismaService] Successfully connected to the database');
+			this.loggerService.log('Successfully connected to the database');
 		} catch (e) {
 			if (e instanceof Error) {
-				this.loggerService.error('[PrismaService] Error connecting to database: ' + e.message);
+				this.loggerService.error('Error connecting to database: ' + e.message);
 			}
 		}
 	}
 
 	async disconnect(): Promise<void> {
 		await this.client.$disconnect();
-		this.loggerService.error('[PrismaService] Successfully disconnected from the database');
+		this.loggerService.error('Successfully disconnected from the database');
 	}
 }

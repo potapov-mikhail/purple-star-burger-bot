@@ -10,12 +10,13 @@ export class ConfigService implements IConfigService {
 	private config: DotenvParseOutput;
 
 	constructor(@inject(DI_TOKENS.LoggerService) private readonly loggerService: ILoggerService) {
+		this.loggerService.setPrefix(this.constructor.name);
 		const result: DotenvConfigOutput = config();
 
 		if (result.error) {
-			this.loggerService.error('[ConfigService] Failed to read .env file or is missing');
+			this.loggerService.error('Failed to read .env file or is missing');
 		} else {
-			this.loggerService.log('[ConfigService] Successfully read .env file');
+			this.loggerService.log('Successfully read .env file');
 			this.config = result.parsed as DotenvParseOutput;
 		}
 	}

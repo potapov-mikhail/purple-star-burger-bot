@@ -4,8 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "node ./dist/main.js",
-    "dev": "nodemon",
+    "start": "cross-env node ./dist/main.js",
+    "dev": "cross-env DEBUG_LEVEL=debug nodemon",
     "build": "tsc",
     "lint": "eslint ./src/**",
     "test": "jest",
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@prisma/client": "^4.1.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.1",
     "inversify": "^6.0.1",
     "reflect-metadata": "^0.1.13",

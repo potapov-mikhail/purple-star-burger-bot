@@ -14,7 +14,7 @@ import { TelegramBot } from '../../telegram-bot/telegram-bot';
 export const DI_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IApplication>(DI_TOKENS.Application).to(Application);
 	bind<ITelegramBot>(DI_TOKENS.TelegramBot).to(TelegramBot);
-	bind<ILoggerService>(DI_TOKENS.LoggerService).to(LoggerService).inSingletonScope();
+	bind<ILoggerService>(DI_TOKENS.LoggerService).to(LoggerService);
 	bind<IConfigService>(DI_TOKENS.ConfigService).to(ConfigService).inSingletonScope();
 	bind<IPrismaService>(DI_TOKENS.PrismaService).to(PrismaService).inSingletonScope();
 });
