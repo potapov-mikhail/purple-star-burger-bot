@@ -42,3 +42,11 @@ Run project in production mode
 npm build
 npm start
 ```
+
+You can also change the log level by passing the DEBUG_LEVEL environment variable:
+| lvl | Description |
+| ----- | -------------------------- |
+| error | Only error messages |
+| warn | Error and warning messages |
+| info | Error, warning and log messages |
+| debug | All messages |
