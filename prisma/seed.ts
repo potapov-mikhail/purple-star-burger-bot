@@ -2,7 +2,10 @@ import { PrismaClient, User } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const DEFAULT_USERS: Pick<User, 'name'>[] = [{ name: 'Mikhail' }, { name: 'Dmitry' }];
+const DEFAULT_USERS: Pick<User, 'name' | 'tgId'>[] = [
+	{ name: 'Mikhail', tgId: 1 },
+	{ name: 'Dmitry', tgId: 2 },
+];
 
 async function main(): Promise<void> {
 	await prisma.$connect();
