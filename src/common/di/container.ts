@@ -12,6 +12,10 @@ import { IAddressRepository } from '../../address/address.repository.interface';
 import { AddressRepository } from '../../address/address.repository';
 import { IAddressService } from '../../address/address.service.interface';
 import { AddressService } from '../../address/address.service';
+import { IOrderRepository } from '../../order/order.repository.interface';
+import { IOrderService } from '../../order/order.service.interface';
+import { OrderRepository } from '../../order/order.repository';
+import { OrderService } from '../../order/order.service';
 
 export const DI_APP_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IUserRepository>(DI_APP_TOKENS.UserRepository).to(UserRepository).inSingletonScope();
@@ -26,4 +30,7 @@ export const DI_APP_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 		.to(AddressRepository)
 		.inSingletonScope();
 	bind<IAddressService>(DI_APP_TOKENS.AddressService).to(AddressService).inSingletonScope();
+
+	bind<IOrderRepository>(DI_APP_TOKENS.OrderRepository).to(OrderRepository).inSingletonScope();
+	bind<IOrderService>(DI_APP_TOKENS.OrderService).to(OrderService).inSingletonScope();
 });
