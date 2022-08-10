@@ -6,6 +6,7 @@ import { Telegraf } from 'telegraf';
 import { DI_APP_TOKENS } from '../common/di/tokens';
 import { IUserService } from '../user/user.service.interface';
 import { CreateUserDto } from '../user/dto/create-user.dto';
+import { IProductService } from '../product/product.service.interface';
 
 @injectable()
 export class TelegramBot implements ITelegramBot {
@@ -14,6 +15,7 @@ export class TelegramBot implements ITelegramBot {
 	constructor(
 		@inject(DI_TOKENS.ConfigService) private readonly configService: IConfigService,
 		@inject(DI_APP_TOKENS.UserService) private readonly userService: IUserService,
+		@inject(DI_APP_TOKENS.ProductService) private readonly productService: IProductService,
 	) {
 		const token = this.configService.get('TG_BOT_TOKEN');
 
@@ -34,6 +36,11 @@ export class TelegramBot implements ITelegramBot {
 			} else {
 				await ctx.reply(`Welcome back ${user.name}!`);
 			}
+
+			const burgers = await this.productService.findAllBurgers();
+			await ctx.reply(`Our burgers: \n ${burgers.map((b) => b.name).join('\n')}!`);
+			const drinks = await this.productService.findAllDrinks();
+			await ctx.reply(`Our drinks: \n ${drinks.map((b) => b.name).join('\n')}!`);
 		});
 	}
 
