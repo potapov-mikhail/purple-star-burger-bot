@@ -10,10 +10,13 @@ import { PrismaService } from '../database/prisma.service';
 import { IPrismaService } from '../database/prisma.interface';
 import { ITelegramBot } from '../../telegram-bot/telegram-bot.interface';
 import { TelegramBot } from '../../telegram-bot/telegram-bot';
+import { ITelegramBotHandler } from '../../telegram-bot/telegram-bot-handler.interface';
+import { TelegramBotHandler } from '../../telegram-bot/telegram-bot-handler';
 
 export const DI_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IApplication>(DI_TOKENS.Application).to(Application);
 	bind<ITelegramBot>(DI_TOKENS.TelegramBot).to(TelegramBot);
+	bind<ITelegramBotHandler>(DI_TOKENS.TelegramBotHandler).to(TelegramBotHandler);
 	bind<ILoggerService>(DI_TOKENS.LoggerService).to(LoggerService);
 	bind<IConfigService>(DI_TOKENS.ConfigService).to(ConfigService).inSingletonScope();
 	bind<IPrismaService>(DI_TOKENS.PrismaService).to(PrismaService).inSingletonScope();
