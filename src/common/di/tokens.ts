@@ -4,4 +4,7 @@ export const DI_APP_TOKENS = {
 
 	ProductService: Symbol.for('ProductService'),
 	ProductRepository: Symbol.for('ProductRepository'),
+
+	AddressService: Symbol.for('AddressService'),
+	AddressRepository: Symbol.for('AddressRepository'),
 };

@@ -7,6 +7,7 @@ import { DI_APP_TOKENS } from '../common/di/tokens';
 import { IUserService } from '../user/user.service.interface';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { IProductService } from '../product/product.service.interface';
+import { IAddressService } from '../address/address.service.interface';
 
 @injectable()
 export class TelegramBot implements ITelegramBot {
@@ -16,6 +17,7 @@ export class TelegramBot implements ITelegramBot {
 		@inject(DI_TOKENS.ConfigService) private readonly configService: IConfigService,
 		@inject(DI_APP_TOKENS.UserService) private readonly userService: IUserService,
 		@inject(DI_APP_TOKENS.ProductService) private readonly productService: IProductService,
+		@inject(DI_APP_TOKENS.AddressService) private readonly addressService: IAddressService,
 	) {
 		const token = this.configService.get('TG_BOT_TOKEN');
 
@@ -41,6 +43,8 @@ export class TelegramBot implements ITelegramBot {
 			await ctx.reply(`Our burgers: \n ${burgers.map((b) => b.name).join('\n')}!`);
 			const drinks = await this.productService.findAllDrinks();
 			await ctx.reply(`Our drinks: \n ${drinks.map((b) => b.name).join('\n')}!`);
+
+			this.addressService.findAllByUserId(4).then(console.log);
 		});
 	}
 
