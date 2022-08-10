@@ -10,4 +10,7 @@ export const DI_APP_TOKENS = {
 
 	OrderService: Symbol.for('OrderService'),
 	OrderRepository: Symbol.for('OrderRepository'),
+
+	ProductTelegramBotController: Symbol.for('ProductTelegramBotController'),
+	ProfileTelegramBotController: Symbol.for('ProfileTelegramBotController'),
 };

@@ -16,6 +16,8 @@ import { IOrderRepository } from '../../order/order.repository.interface';
 import { IOrderService } from '../../order/order.service.interface';
 import { OrderRepository } from '../../order/order.repository';
 import { OrderService } from '../../order/order.service';
+import { ProductTelegramBotController } from '../../product/product-telegram-bot-controller';
+import { ProfileTelegramBotController } from '../../profile/profile-telegram-bot-controller';
 
 export const DI_APP_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IUserRepository>(DI_APP_TOKENS.UserRepository).to(UserRepository).inSingletonScope();
@@ -33,4 +35,12 @@ export const DI_APP_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 
 	bind<IOrderRepository>(DI_APP_TOKENS.OrderRepository).to(OrderRepository).inSingletonScope();
 	bind<IOrderService>(DI_APP_TOKENS.OrderService).to(OrderService).inSingletonScope();
+
+	bind<ProductTelegramBotController>(DI_APP_TOKENS.ProductTelegramBotController)
+		.to(ProductTelegramBotController)
+		.inSingletonScope();
+
+	bind<ProfileTelegramBotController>(DI_APP_TOKENS.ProfileTelegramBotController)
+		.to(ProfileTelegramBotController)
+		.inSingletonScope();
 });
