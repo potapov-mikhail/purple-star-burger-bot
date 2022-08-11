@@ -13,4 +13,5 @@ export const DI_APP_TOKENS = {
 
 	ProductTelegramBotController: Symbol.for('ProductTelegramBotController'),
 	ProfileTelegramBotController: Symbol.for('ProfileTelegramBotController'),
+	OrderTelegramBotController: Symbol.for('OrderTelegramBotController'),
 };

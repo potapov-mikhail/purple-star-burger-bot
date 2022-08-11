@@ -12,10 +12,17 @@ export class ProfileTelegramBotController {
 		@inject(DI_APP_TOKENS.AddressService) private addressService: IAddressService,
 	) {}
 
-	async showAddressList(ctx: Context, id: number): Promise<void> {
+	async showProfile(ctx: Context, id: number): Promise<void> {
 		const user = await this.userService.findByTgId(id);
 		const addresses = await this.addressService.findAllByUserId(user!.id);
 		const template = ProfileReplyView.getProfileCard(user!, addresses);
+		await ctx.replyWithMarkdown(template);
+	}
+
+	async showAddressList(ctx: Context, id: number): Promise<void> {
+		const user = await this.userService.findByTgId(id);
+		const addresses = await this.addressService.findAllByUserId(user!.id);
+		const template = ProfileReplyView.getAddressesList(addresses);
 		await ctx.replyWithMarkdown(template);
 	}
 }
