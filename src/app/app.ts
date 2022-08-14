@@ -4,7 +4,7 @@ import { DI_TOKENS } from '../core/di/tokens';
 import { IApplication } from './app.interface';
 import { IPrismaService } from '../core/database/prisma.interface';
 import { ILoggerService } from '../core/logger/logger.interface';
-import { ITelegramBot } from '../telegram-bot/telegram-bot.interface';
+import { ITelegramBot } from '../telegram-bot/core/telegram-bot.interface';
 
 @injectable()
 export class Application implements IApplication {

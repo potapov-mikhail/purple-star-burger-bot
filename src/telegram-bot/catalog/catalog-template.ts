@@ -15,9 +15,9 @@ export interface IBurgerTemplateConfig {
 	price: number;
 }
 
-export abstract class ProductReplyView {
+export abstract class CatalogTemplate {
 	static getBurgersList(configs: IBurgerTemplateConfig[] = []): string {
-		return configs.map((config) => ProductReplyView.getBurgerListItem(config)).join('\n\n');
+		return configs.map((config) => CatalogTemplate.getBurgerListItem(config)).join('\n\n');
 	}
 
 	static getBurgerListItem(config: IBurgerTemplateConfig): string {
@@ -29,7 +29,7 @@ export abstract class ProductReplyView {
 	}
 
 	static getDrinksList(configs: IBurgerTemplateConfig[] = []): string {
-		return configs.map((config) => ProductReplyView.getDrinkListItem(config)).join('\n\n');
+		return configs.map((config) => CatalogTemplate.getDrinkListItem(config)).join('\n\n');
 	}
 
 	static getDrinkListItem(config: IBurgerTemplateConfig): string {

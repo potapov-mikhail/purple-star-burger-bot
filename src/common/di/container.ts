@@ -16,13 +16,27 @@ import { IOrderRepository } from '../../order/order.repository.interface';
 import { IOrderService } from '../../order/order.service.interface';
 import { OrderRepository } from '../../order/order.repository';
 import { OrderService } from '../../order/order.service';
-import { ProductTelegramBotController } from '../../product/product-telegram-bot-controller';
-import { ProfileTelegramBotController } from '../../profile/profile-telegram-bot-controller';
-import { OrderTelegramBotController } from '../../order/order-telegram-bot-controller';
+import { CatalogReplyService } from '../../telegram-bot/catalog/catalog-reply-service';
+
+import { CommonHandler } from '../../telegram-bot/common/common-handler';
+import { CartHandler } from '../../telegram-bot/cart/cart-handler';
+import { CatalogHandler } from '../../telegram-bot/catalog/catalog-handler';
+import { ProfileHandler } from '../../telegram-bot/profile/profile-handler';
+import { ProfileReplyService } from '../../telegram-bot/profile/profile-reply-service';
+import { AddAddressHandler } from '../../telegram-bot/profile/address-handler';
+import { ITelegramBotStorage } from '../../telegram-bot/core/telegram-bot-stoage/telegram-bot-storage.interface';
+import { TelegramBotStorage } from '../../telegram-bot/core/telegram-bot-stoage/telegram-bot-storage';
+import { ICityRepository } from '../../city/city.repository.interface';
+import { CityRepository } from '../../city/city.repository';
+import { ICityService } from '../../city/city.service.interface';
+import { CityService } from '../../city/city.service';
 
 export const DI_APP_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IUserRepository>(DI_APP_TOKENS.UserRepository).to(UserRepository).inSingletonScope();
 	bind<IUserService>(DI_APP_TOKENS.UserService).to(UserService).inSingletonScope();
+
+	bind<ICityRepository>(DI_APP_TOKENS.CityRepository).to(CityRepository).inSingletonScope();
+	bind<ICityService>(DI_APP_TOKENS.CityService).to(CityService).inSingletonScope();
 
 	bind<IProductRepository>(DI_APP_TOKENS.ProductRepository)
 		.to(ProductRepository)
@@ -37,15 +51,21 @@ export const DI_APP_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IOrderRepository>(DI_APP_TOKENS.OrderRepository).to(OrderRepository).inSingletonScope();
 	bind<IOrderService>(DI_APP_TOKENS.OrderService).to(OrderService).inSingletonScope();
 
-	bind<ProductTelegramBotController>(DI_APP_TOKENS.ProductTelegramBotController)
-		.to(ProductTelegramBotController)
+	bind<CatalogReplyService>(DI_APP_TOKENS.ProductTelegramBotController)
+		.to(CatalogReplyService)
 		.inSingletonScope();
 
-	bind<ProfileTelegramBotController>(DI_APP_TOKENS.ProfileTelegramBotController)
-		.to(ProfileTelegramBotController)
+	bind<CommonHandler>(DI_APP_TOKENS.CommandHandler).to(CommonHandler).inSingletonScope();
+	bind<CartHandler>(DI_APP_TOKENS.CartHandler).to(CartHandler).inSingletonScope();
+	bind<CatalogHandler>(DI_APP_TOKENS.CatalogHandler).to(CatalogHandler).inSingletonScope();
+	bind<ProfileHandler>(DI_APP_TOKENS.ProfileHandler).to(ProfileHandler).inSingletonScope();
+
+	bind<ProfileReplyService>(DI_APP_TOKENS.ProfileReplyService)
+		.to(ProfileReplyService)
 		.inSingletonScope();
 
-	bind<OrderTelegramBotController>(DI_APP_TOKENS.OrderTelegramBotController)
-		.to(OrderTelegramBotController)
+	bind<AddAddressHandler>(DI_APP_TOKENS.AddAddressHandler).to(AddAddressHandler).inSingletonScope();
+	bind<ITelegramBotStorage>(DI_APP_TOKENS.TelegramBotStorage)
+		.to(TelegramBotStorage)
 		.inSingletonScope();
 });

@@ -18,7 +18,7 @@ export class ProductService implements IProductService {
 	findAllBurgers(params: IPagination = { page: 1, limit: 10 }): Promise<Product[]> {
 		const { skip, take } = computePagination(params.page, params.limit);
 		return this.productRepository.find({
-			where: { ProductOnCategory: { every: { categoryId: BURGER_CATEGORY_ID } } },
+			where: { ProductOnCategory: { some: { categoryId: BURGER_CATEGORY_ID } } },
 			skip,
 			take,
 		});
@@ -27,7 +27,7 @@ export class ProductService implements IProductService {
 	findAllDrinks(params: IPagination = { page: 1, limit: 20 }): Promise<Product[]> {
 		const { skip, take } = computePagination(params.page, params.limit);
 		return this.productRepository.find({
-			where: { ProductOnCategory: { every: { categoryId: DRINKS_CATEGORY_ID } } },
+			where: { ProductOnCategory: { some: { categoryId: DRINKS_CATEGORY_ID } } },
 			skip,
 			take,
 		});
