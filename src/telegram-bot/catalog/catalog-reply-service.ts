@@ -31,6 +31,34 @@ export class CatalogReplyService {
 		}
 	}
 
+	async replaceBurgerList(ctx: Context, pagination: IPagination): Promise<void> {
+		const products = await this.productService.findAllBurgers(pagination);
+		const template = CatalogTemplate.getBurgersList(products);
+		const markup = PaginationTemplate.getPaginationMarkupTemplate(
+			pagination.page,
+			'onChangeBurgersPage',
+			false,
+		);
+
+		if (template) {
+			await ctx.editMessageText(template, {
+				reply_markup: {
+					inline_keyboard: markup,
+				},
+			});
+		} else {
+			await ctx.editMessageText('Ничего не найдено', {
+				reply_markup: {
+					inline_keyboard: PaginationTemplate.getPaginationMarkupTemplate(
+						pagination.page,
+						'onChangeBurgersPage',
+						true,
+					),
+				},
+			});
+		}
+	}
+
 	async showDrinksList(ctx: Context, pagination: IPagination): Promise<void> {
 		const drinks = await this.productService.findAllDrinks(pagination);
 		const template = CatalogTemplate.getDrinksList(drinks);

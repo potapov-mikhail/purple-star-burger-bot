@@ -1,10 +1,16 @@
 import { inject, injectable } from 'inversify';
+import { SessionContext } from 'telegraf/typings/session';
 import { DI_APP_TOKENS } from '../../common/di/tokens';
 import { parseId } from '../../utils/parse-id';
 import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
 import { validateId } from '../middleware/validate-id';
 import { CatalogAction } from './catalog-actions';
 import { CatalogReplyService } from './catalog-reply-service';
+
+interface IBurgerListState {
+	page: number;
+	limit: number;
+}
 
 @injectable()
 export class CatalogHandler extends TelegramBotHandler {
@@ -14,9 +20,7 @@ export class CatalogHandler extends TelegramBotHandler {
 	) {
 		super();
 
-		this.composer.command(CatalogAction.burgerList, (ctx) => {
-			(ctx as any).session.burgerList = { page: 1, limit: 1 };
-
+		this.composer.command(CatalogAction.burgerList, (ctx: SessionContext<IBurgerListState>) => {
 			this.catalogReplyService.showBurgerList(ctx, { page: 1, limit: 1 });
 		});
 
@@ -28,7 +32,7 @@ export class CatalogHandler extends TelegramBotHandler {
 		this.composer.action(CatalogAction.burgerChangePage, (ctx) => {
 			const match = (ctx as any).match[0] as string;
 			const page = Number(match.split('-')[1]);
-			console.log(page);
+			this.catalogReplyService.replaceBurgerList(ctx, { page, limit: 1 });
 		});
 
 		this.composer.command(CatalogAction.drinkList, (ctx) => {
