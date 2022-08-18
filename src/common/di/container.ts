@@ -24,8 +24,6 @@ import { CatalogHandler } from '../../telegram-bot/catalog/catalog-handler';
 import { ProfileHandler } from '../../telegram-bot/profile/profile-handler';
 import { ProfileReplyService } from '../../telegram-bot/profile/profile-reply-service';
 import { AddAddressHandler } from '../../telegram-bot/profile/address-handler';
-import { ITelegramBotStorage } from '../../telegram-bot/core/telegram-bot-stoage/telegram-bot-storage.interface';
-import { TelegramBotStorage } from '../../telegram-bot/core/telegram-bot-stoage/telegram-bot-storage';
 import { ICityRepository } from '../../city/city.repository.interface';
 import { CityRepository } from '../../city/city.repository';
 import { ICityService } from '../../city/city.service.interface';
@@ -65,7 +63,4 @@ export const DI_APP_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 		.inSingletonScope();
 
 	bind<AddAddressHandler>(DI_APP_TOKENS.AddAddressHandler).to(AddAddressHandler).inSingletonScope();
-	bind<ITelegramBotStorage>(DI_APP_TOKENS.TelegramBotStorage)
-		.to(TelegramBotStorage)
-		.inSingletonScope();
 });

@@ -8,23 +8,23 @@ export class CartHandler extends TelegramBotHandler {
 		super();
 
 		this.composer.command('cart', (ctx) => {
-			ctx.reply('Cart');
+			ctx.reply('Not implemented');
 		});
 
 		this.composer.action(CartAction.AddBurgerToCart, (ctx) => {
-			ctx.reply(JSON.stringify(ctx.match));
+			ctx.reply('Not implemented');
 		});
 
 		this.composer.action(CartAction.DeleteBurgerFromCart, (ctx) => {
-			ctx.reply(JSON.stringify(ctx.match));
+			ctx.reply('Not implemented');
 		});
 
 		this.composer.action(CartAction.AddDrinkToCart, (ctx) => {
-			ctx.reply(JSON.stringify(ctx.match));
+			ctx.reply('Not implemented');
 		});
 
 		this.composer.action(CartAction.DeleteDrinkFromCart, (ctx) => {
-			ctx.reply(JSON.stringify(ctx.match));
+			ctx.reply('Not implemented');
 		});
 	}
 }

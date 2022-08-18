@@ -3,14 +3,10 @@ import { SessionContext } from 'telegraf/typings/session';
 import { DI_APP_TOKENS } from '../../common/di/tokens';
 import { parseId } from '../../utils/parse-id';
 import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
+import { TelegramBotMatchedContext } from '../core/telegram-bot.interface';
 import { validateId } from '../middleware/validate-id';
 import { CatalogAction } from './catalog-actions';
 import { CatalogReplyService } from './catalog-reply-service';
-
-interface IBurgerListState {
-	page: number;
-	limit: number;
-}
 
 @injectable()
 export class CatalogHandler extends TelegramBotHandler {
@@ -20,7 +16,7 @@ export class CatalogHandler extends TelegramBotHandler {
 	) {
 		super();
 
-		this.composer.command(CatalogAction.burgerList, (ctx: SessionContext<IBurgerListState>) => {
+		this.composer.command(CatalogAction.burgerList, (ctx: SessionContext<{}>) => {
 			this.catalogReplyService.showBurgerList(ctx, { page: 1, limit: 1 });
 		});
 
@@ -29,14 +25,22 @@ export class CatalogHandler extends TelegramBotHandler {
 			this.catalogReplyService.showBurgerCard(ctx, id);
 		});
 
-		this.composer.action(CatalogAction.burgerChangePage, (ctx) => {
-			const match = (ctx as any).match[0] as string;
-			const page = Number(match.split('-')[1]);
-			this.catalogReplyService.replaceBurgerList(ctx, { page, limit: 1 });
-		});
+		this.composer.action(
+			CatalogAction.burgerChangePage,
+			(
+				ctx: TelegramBotMatchedContext<
+					SessionContext<{}> & { match: RegExpExecArray },
+					'callback_query'
+				>,
+			) => {
+				const match = ctx.match[0];
+				const page = Number(match.split('-')[1]);
+				this.catalogReplyService.replaceBurgerList(ctx, { page, limit: 1 });
+			},
+		);
 
 		this.composer.command(CatalogAction.drinkList, (ctx) => {
-			this.catalogReplyService.showDrinksList(ctx, { page: 1, limit: 10 });
+			this.catalogReplyService.showDrinksList(ctx, { page: 1, limit: 1 });
 		});
 
 		this.composer.hears(CatalogAction.drinkCard, validateId, (ctx) => {
