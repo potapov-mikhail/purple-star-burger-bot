@@ -1,8 +1,5 @@
-import { Prisma, City } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { IBaseRepository } from '../common/repository/base-repository.interface';
 
-export type FindOneCityFilter = Pick<City, 'id'> | Pick<City, 'name'>;
-
-export interface ICityRepository {
-	find(args?: Prisma.CityFindManyArgs): Promise<City[]>;
-	findOneBy(filter: Prisma.CityFindFirstArgs): Promise<City | null>;
-}
+export type CityPrismaModel = PrismaClient['city'];
+export type ICityRepository = IBaseRepository<CityPrismaModel>;

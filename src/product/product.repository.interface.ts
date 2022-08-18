@@ -1,8 +1,5 @@
-import { Prisma, Product } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { IBaseRepository } from '../common/repository/base-repository.interface';
 
-export type FindOneProductFilter = Pick<Product, 'id'> | Pick<Product, 'name'>;
-
-export interface IProductRepository {
-	find(args?: Prisma.ProductFindManyArgs): Promise<Product[]>;
-	findOneBy(filter: FindOneProductFilter): Promise<Product | null>;
-}
+export type ProductPrismaModel = PrismaClient['product'];
+export type IProductRepository = IBaseRepository<ProductPrismaModel>;

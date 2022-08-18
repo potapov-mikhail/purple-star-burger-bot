@@ -1,9 +1,5 @@
-import { User } from '@prisma/client';
-import { CreateUserDto } from './dto/create-user.dto';
+import { PrismaClient } from '@prisma/client';
+import { IBaseRepository } from '../common/repository/base-repository.interface';
 
-export type FindOneUserFilter = Pick<User, 'id'> | Pick<User, 'tgId'>;
-
-export interface IUserRepository {
-	findOneBy(filter: FindOneUserFilter): Promise<User | null>;
-	create(user: CreateUserDto): Promise<User>;
-}
+export type UserPrismaModel = PrismaClient['user'];
+export type IUserRepository = IBaseRepository<UserPrismaModel>;

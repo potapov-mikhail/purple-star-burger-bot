@@ -1,17 +1,10 @@
-interface IBaseRepositoryMethods {
-	findUnique: any;
-	findFirst: any;
-	findMany: any;
-	create: any;
-	createMany: any;
-	delete: any;
-	update: any;
-	deleteMany: any;
-	updateMany: any;
-	count: any;
-}
+import { injectable } from 'inversify';
+import { IBaseRepository, IBaseRepositoryMethods } from './base-repository.interface';
 
-export class BaseRepository<Model extends IBaseRepositoryMethods> {
+@injectable()
+export class BaseRepository<Model extends IBaseRepositoryMethods>
+	implements IBaseRepository<Model>
+{
 	constructor(public model: Model) {}
 
 	create(args: Parameters<Model['create']>[0]): ReturnType<Model['create']> {
@@ -52,15 +45,5 @@ export class BaseRepository<Model extends IBaseRepositoryMethods> {
 
 	count(args: Parameters<Model['count']>[0]): ReturnType<Model['count']> {
 		return this.model.count(args);
-	}
-}
-
-import { Prisma, PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-export class UserRepo extends BaseRepository<typeof prisma.user> {
-	constructor() {
-		super(null as any);
 	}
 }

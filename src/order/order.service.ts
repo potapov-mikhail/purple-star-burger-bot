@@ -9,10 +9,10 @@ export class OrderService implements IOrderService {
 	constructor(@inject(DI_APP_TOKENS.OrderRepository) private orderRepository: IOrderRepository) {}
 
 	findById(id: number): Promise<Order | null> {
-		return this.orderRepository.findOneBy({ id });
+		return this.orderRepository.findUnique({ where: { id } });
 	}
 
 	findAllByUserId(userId: number): Promise<Order[]> {
-		return this.orderRepository.find({ where: { userId } });
+		return this.orderRepository.findMany({ where: { userId } });
 	}
 }

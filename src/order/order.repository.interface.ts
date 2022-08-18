@@ -1,8 +1,5 @@
-import { Prisma, Order } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { IBaseRepository } from '../common/repository/base-repository.interface';
 
-export type FindOneOrderFilter = Pick<Order, 'id'> | Pick<Order, 'userId'>;
-
-export interface IOrderRepository {
-	find(args?: Prisma.OrderFindManyArgs): Promise<Order[]>;
-	findOneBy(filter: FindOneOrderFilter): Promise<Order | null>;
-}
+export type OrderPrismaModel = PrismaClient['order'];
+export type IOrderRepository = IBaseRepository<OrderPrismaModel>;

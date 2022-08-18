@@ -9,11 +9,11 @@ export class CityService implements ICityService {
 	constructor(@inject(DI_APP_TOKENS.CityRepository) private cityRepository: ICityRepository) {}
 
 	findAll(): Promise<City[]> {
-		return this.cityRepository.find();
+		return this.cityRepository.findMany({});
 	}
 
 	findByName(name: string): Promise<City | null> {
-		return this.cityRepository.findOneBy({
+		return this.cityRepository.findFirst({
 			where: { name: { equals: name, mode: 'insensitive' } },
 		});
 	}
