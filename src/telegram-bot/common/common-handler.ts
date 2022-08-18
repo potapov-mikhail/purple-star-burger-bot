@@ -5,12 +5,17 @@ import { CommonTemlate } from './common-template';
 import { APP_TOKENS } from '../../common/di/tokens';
 import { CreateUserDto } from '../../user/dto/create-user.dto';
 import { IUserService } from '../../user/user.service.interface';
+import { IAddressService } from '../../address/address.service.interface';
 import { TelegramBotCommandContext } from '../core/telegram-bot-context.interface';
 import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
+import { ProfileScene } from '../profile/profile-actions';
 
 @injectable()
 export class CommonHandler extends TelegramBotHandler {
-	constructor(@inject(APP_TOKENS.UserService) private userService: IUserService) {
+	constructor(
+		@inject(APP_TOKENS.UserService) private userService: IUserService,
+		@inject(APP_TOKENS.AddressService) private addressService: IAddressService,
+	) {
 		super();
 
 		this.bindCommands([
@@ -26,17 +31,27 @@ export class CommonHandler extends TelegramBotHandler {
 	}
 
 	private async start(ctx: TelegramBotCommandContext): Promise<void> {
-		const foundUser = await this.userService.findByTgId(ctx.from.id);
+		let user = await this.userService.findByTgId(ctx.from.id);
 
-		if (foundUser) {
-			ctx.reply(CommonTemlate.getComebackGreeting(foundUser.name));
+		if (user) {
+			await ctx.reply(CommonTemlate.getComebackGreeting(user.name));
 		} else {
-			const dto = plainToClass(CreateUserDto, {
+			const newUser = plainToClass(CreateUserDto, {
 				name: ctx.from.first_name,
 				tgId: ctx.from.id,
 			});
-			const createdUser = await this.userService.create(dto);
-			ctx.reply(CommonTemlate.getWelcomeGreeting(createdUser.name));
+
+			user = await this.userService.create(newUser);
+			await ctx.reply(CommonTemlate.getWelcomeGreeting(user.name));
+		}
+
+		const address = await this.addressService.findAllByUserId(user.id);
+
+		if (address.length) {
+			await ctx.reply(CommonTemlate.getHelp());
+		} else {
+			await ctx.reply(CommonTemlate.getAddressRequest());
+			await (ctx as any).scene.enter(ProfileScene.AddAddress);
 		}
 	}
 

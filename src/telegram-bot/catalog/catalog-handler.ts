@@ -66,13 +66,13 @@ export class CatalogHandler extends TelegramBotHandler {
 	private async burgerChangePage(ctx: TelegramBotActionContext): Promise<void> {
 		const match = ctx.match[0];
 		const page = Number(match.split('-')[1]);
-		this.catalogReplyService.replaceBurgerList(ctx, { page, limit: 1 });
+		this.catalogReplyService.showBurgerList(ctx, { page, limit: 1 }, true);
 	}
 
 	private async drinkChangePage(ctx: TelegramBotActionContext): Promise<void> {
 		const match = ctx.match[0];
 		const page = Number(match.split('-')[1]);
-		this.catalogReplyService.replaceDrinksList(ctx, { page, limit: 1 });
+		this.catalogReplyService.showDrinksList(ctx, { page, limit: 1 }, true);
 	}
 
 	private async showBurgerCard(ctx: TelegramBotHeartContext): Promise<void> {

@@ -20,13 +20,22 @@ export class TelegramBotHandler implements ITelegramBotHandler {
 
 	bindCommands(commands: ITelegramBotHandlerCommand[]): void {
 		for (const command of commands) {
-			this.composer.command(command.name, command.handler);
+			const handlers: MatchedMiddleware<Context, 'text'> = command.middleware
+				? [command.middleware.execute, command.handler]
+				: [command.handler];
+
+			//@ts-ignore
+			this.composer.command(command.name, ...handlers);
 		}
 	}
 
 	bindActions(actions: ITelegramBotHandlerAction[]): void {
 		for (const action of actions) {
-			this.composer.action(action.name, action.handler);
+			const handlers: MatchedMiddleware<Context, 'callback_query'> = action.middleware
+				? [action.middleware.execute, action.handler]
+				: [action.handler];
+
+			this.composer.action(action.name, ...handlers);
 		}
 	}
 

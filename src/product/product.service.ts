@@ -8,6 +8,7 @@ import { IProductRepository } from './product.repository.interface';
 
 const BURGER_CATEGORY_ID = 1;
 const DRINKS_CATEGORY_ID = 3;
+const DEFAULT_LIST_LIMIT = 10;
 
 @injectable()
 export class ProductService implements IProductService {
@@ -15,8 +16,10 @@ export class ProductService implements IProductService {
 		@inject(APP_TOKENS.ProductRepository) private productRepository: IProductRepository,
 	) {}
 
-	findAllBurgers(params: IPagination = { page: 1, limit: 10 }): Promise<Product[]> {
+	findAllBurgers(params: IPagination = { page: 1, limit: DEFAULT_LIST_LIMIT }): Promise<Product[]> {
 		const { skip, take } = computePagination(params.page, params.limit);
+
+		console.log(skip, take);
 		return this.productRepository.findMany({
 			where: { ProductOnCategory: { some: { categoryId: BURGER_CATEGORY_ID } } },
 			skip,
@@ -24,7 +27,7 @@ export class ProductService implements IProductService {
 		});
 	}
 
-	findAllDrinks(params: IPagination = { page: 1, limit: 20 }): Promise<Product[]> {
+	findAllDrinks(params: IPagination = { page: 1, limit: DEFAULT_LIST_LIMIT }): Promise<Product[]> {
 		const { skip, take } = computePagination(params.page, params.limit);
 		return this.productRepository.findMany({
 			where: { ProductOnCategory: { some: { categoryId: DRINKS_CATEGORY_ID } } },

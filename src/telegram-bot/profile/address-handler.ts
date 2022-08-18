@@ -1,8 +1,10 @@
 import { inject, injectable } from 'inversify';
 import { plainToClass } from 'class-transformer';
 import { TG_BOT_TOKENS } from '../di/tokens';
+import { ProfileScene } from './profile-actions';
 import { APP_TOKENS } from '../../common/di/tokens';
 import { SceneContext } from 'telegraf/typings/scenes';
+import { CommonTemlate } from '../common/common-template';
 import { ProfileReplyService } from './profile-reply-service';
 import { ICityService } from '../../city/city.service.interface';
 import { IUserService } from '../../user/user.service.interface';
@@ -34,7 +36,7 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 		@inject(APP_TOKENS.AddressService) private addressService: IAddressService,
 		@inject(TG_BOT_TOKENS.ProfileReplyService) private profileReplyService: ProfileReplyService,
 	) {
-		super('addAddress');
+		super(ProfileScene.AddAddress);
 		this.initScenarios();
 
 		this.scene.enter((ctx) => {
@@ -44,6 +46,15 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 			if (scenario) {
 				ctx.reply(scenario.question);
 			}
+		});
+
+		this.scene.hears(ProfileScene.AddAddresCancel, async (ctx) => {
+			await ctx.reply('Вы покинули форму ввода адреса', {
+				reply_markup: {
+					remove_keyboard: true,
+				},
+			});
+			await ctx.scene.leave();
 		});
 
 		this.scene.on('text', async (ctx) => {
@@ -71,7 +82,11 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 		if (currentScenario.validation) {
 			const error = await currentScenario.validation(answer);
 			if (error) {
-				await ctx.reply(error);
+				await ctx.reply(error, {
+					reply_markup: {
+						keyboard: [[{ text: ProfileScene.AddAddresCancel }]],
+					},
+				});
 				return;
 			}
 		}
@@ -92,7 +107,8 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 					house,
 				});
 
-				this.profileReplyService.showProfileCard(ctx, ctx.from.id);
+				await ctx.reply('🔥 Огонь! Мы доставляем по вашему адресу');
+				await ctx.reply(CommonTemlate.getHelp());
 				await ctx.scene.leave();
 			} else {
 				ctx.reply('Что то пошло не так попробуйте еще раз');
@@ -126,7 +142,7 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 				const city = await this.cityService.findByName(value);
 				return city
 					? null
-					: '😞 К сожалению, мы пока к вам не доставляем, но, надеемся, совсем скоро расширим зону.';
+					: '😞 К сожалению, мы пока к вам не доставляем, но, надеемся, совсем скоро расширим зону. Вы можете ввести другой город или покинуть форму.';
 			},
 		});
 

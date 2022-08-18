@@ -18,26 +18,30 @@ export class CartHandler extends TelegramBotHandler {
 		this.bindActions([
 			{
 				name: CartAction.AddBurgerToCart,
-				handler: this.notImplemented.bind(this),
+				handler: this.notImplementedDialog.bind(this),
 			},
 
 			{
 				name: CartAction.DeleteBurgerFromCart,
-				handler: this.notImplemented.bind(this),
+				handler: this.notImplementedDialog.bind(this),
 			},
 
 			{
 				name: CartAction.AddDrinkToCart,
-				handler: this.notImplemented.bind(this),
+				handler: this.notImplementedDialog.bind(this),
 			},
 			{
 				name: CartAction.DeleteDrinkFromCart,
-				handler: this.notImplemented.bind(this),
+				handler: this.notImplementedDialog.bind(this),
 			},
 		]);
 	}
 
 	private async notImplemented(ctx: Context): Promise<void> {
-		ctx.reply('Not implemented');
+		await ctx.reply('Not implemented');
+	}
+
+	private async notImplementedDialog(ctx: Context): Promise<void> {
+		await ctx.answerCbQuery('Not implemented');
 	}
 }

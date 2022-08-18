@@ -13,7 +13,7 @@ import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
 export class CatalogReplyService {
 	constructor(@inject(APP_TOKENS.ProductService) private productService: IProductService) {}
 
-	async showBurgerList(ctx: Context, pagination: IPagination): Promise<void> {
+	async showBurgerList(ctx: Context, pagination: IPagination, replace = false): Promise<void> {
 		const products = await this.productService.findAllBurgers(pagination);
 		const template = CatalogTemplate.getBurgersList(products);
 		const markup = PaginationTemplate.getPaginationMarkupTemplate(
@@ -23,47 +23,15 @@ export class CatalogReplyService {
 		);
 
 		if (template) {
-			await ctx.replyWithMarkdown(template, {
-				reply_markup: {
-					inline_keyboard: markup,
-				},
-			});
+			this.replyList(ctx, template, markup, replace);
 		} else {
-			await ctx.reply('Ничего не найдено');
+			this.replyNotFound(ctx, pagination, CatalogActionPrefix.burgerChangePage, replace);
 		}
 	}
 
-	async replaceBurgerList(ctx: Context, pagination: IPagination): Promise<void> {
-		const products = await this.productService.findAllBurgers(pagination);
-		const template = CatalogTemplate.getBurgersList(products);
-		const markup = PaginationTemplate.getPaginationMarkupTemplate(
-			pagination.page,
-			CatalogActionPrefix.burgerChangePage,
-			false,
-		);
-
-		if (template) {
-			await ctx.editMessageText(template, {
-				reply_markup: {
-					inline_keyboard: markup,
-				},
-			});
-		} else {
-			await ctx.editMessageText('Ничего не найдено', {
-				reply_markup: {
-					inline_keyboard: PaginationTemplate.getPaginationMarkupTemplate(
-						pagination.page,
-						CatalogActionPrefix.burgerChangePage,
-						true,
-					),
-				},
-			});
-		}
-	}
-
-	async showDrinksList(ctx: Context, pagination: IPagination): Promise<void> {
-		const drinks = await this.productService.findAllDrinks(pagination);
-		const template = CatalogTemplate.getDrinksList(drinks);
+	async showDrinksList(ctx: Context, pagination: IPagination, replace = false): Promise<void> {
+		const products = await this.productService.findAllDrinks(pagination);
+		const template = CatalogTemplate.getDrinksList(products);
 		const markup = PaginationTemplate.getPaginationMarkupTemplate(
 			pagination.page,
 			CatalogActionPrefix.drinkChangePage,
@@ -71,41 +39,9 @@ export class CatalogReplyService {
 		);
 
 		if (template) {
-			await ctx.replyWithMarkdown(template, {
-				reply_markup: {
-					inline_keyboard: markup,
-				},
-			});
+			this.replyList(ctx, template, markup, replace);
 		} else {
-			await ctx.reply('Ничего не найдено');
-		}
-	}
-
-	async replaceDrinksList(ctx: Context, pagination: IPagination): Promise<void> {
-		const drinks = await this.productService.findAllDrinks(pagination);
-		const template = CatalogTemplate.getDrinksList(drinks);
-		const markup = PaginationTemplate.getPaginationMarkupTemplate(
-			pagination.page,
-			CatalogActionPrefix.drinkChangePage,
-			false,
-		);
-
-		if (template) {
-			await ctx.editMessageText(template, {
-				reply_markup: {
-					inline_keyboard: markup,
-				},
-			});
-		} else {
-			await ctx.editMessageText('Ничего не найдено', {
-				reply_markup: {
-					inline_keyboard: PaginationTemplate.getPaginationMarkupTemplate(
-						pagination.page,
-						CatalogActionPrefix.drinkChangePage,
-						true,
-					),
-				},
-			});
+			this.replyNotFound(ctx, pagination, CatalogActionPrefix.drinkChangePage, replace);
 		}
 	}
 
@@ -126,7 +62,7 @@ export class CatalogReplyService {
 
 		await ctx.replyWithMarkdown(template, {
 			reply_markup: {
-				inline_keyboard: keyboard as InlineKeyboardButton[][],
+				inline_keyboard: keyboard,
 			},
 		});
 	}
@@ -134,11 +70,67 @@ export class CatalogReplyService {
 	async showDrinkCard(ctx: Context, id: number): Promise<void> {
 		const drink = await this.productService.findById(id);
 		let template = 'Напиток не найден';
+		let keyboard: InlineKeyboardButton[][] = [];
 
 		if (drink) {
 			template = CatalogTemplate.getDrinkCard(drink);
+			keyboard = [
+				[
+					{ text: '-', callback_data: `${CartActionPrefix.DeleteDrinkFromCart}-${drink.id}` },
+					{ text: '+', callback_data: `${CartActionPrefix.AddDrinkToCart}-${drink.id}` },
+				],
+			];
 		}
 
-		await ctx.replyWithMarkdown(template);
+		await ctx.replyWithMarkdown(template, {
+			reply_markup: {
+				inline_keyboard: keyboard,
+			},
+		});
+	}
+
+	private async replyList(
+		ctx: Context,
+		template: string,
+		markup: InlineKeyboardButton[][],
+		replace: boolean,
+	): Promise<void> {
+		if (replace) {
+			await ctx.editMessageText(template, {
+				reply_markup: {
+					inline_keyboard: markup,
+				},
+			});
+		} else {
+			await ctx.replyWithMarkdown(template, {
+				reply_markup: {
+					inline_keyboard: markup,
+				},
+			});
+		}
+	}
+
+	private async replyNotFound(
+		ctx: Context,
+		pagination: IPagination,
+		prefix: string,
+		replace: boolean,
+	): Promise<void> {
+		const text = '☹️Ничего не найдено';
+		const markup = {
+			reply_markup: {
+				inline_keyboard: PaginationTemplate.getPaginationMarkupTemplate(
+					pagination.page,
+					prefix,
+					true,
+				),
+			},
+		};
+
+		if (replace) {
+			await ctx.editMessageText(text, markup);
+		} else {
+			await ctx.reply(text, markup);
+		}
 	}
 }
