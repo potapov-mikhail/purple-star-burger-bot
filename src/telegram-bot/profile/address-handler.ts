@@ -8,6 +8,7 @@ import { TelegramBotMatchedContext } from '../core/telegram-bot.interface';
 import { IUserService } from '../../user/user.service.interface';
 import { IAddressService } from '../../address/address.service.interface';
 import { CreateAddressDto } from '../../address/dto/create-address-dto';
+import { plainToClass } from 'class-transformer';
 
 interface IAddressEditoState {
 	step: number;
@@ -105,12 +106,13 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 		const user = await this.userService.findByTgId(tgId);
 
 		if (user) {
-			const address = new CreateAddressDto(
-				user.id,
-				addressParams.city,
-				addressParams.street,
-				addressParams.house,
-			);
+			const address = plainToClass(CreateAddressDto, {
+				userId: user.id,
+				city: addressParams.city,
+				street: addressParams.street,
+				house: addressParams.house,
+			});
+
 			await this.addressService.create(address);
 		}
 	}
