@@ -2,17 +2,8 @@ import { Context } from 'telegraf';
 import { SessionContext } from 'telegraf/typings/session';
 
 import { parseId } from '../../utils/parse-id';
+import { TelegramBotMatchedContext } from '../core/telegram-bot-context.interface';
 import { ITelegramBotMiddlewate } from '../core/telegram-bot-middleware.interface';
-import { TelegramBotMatchedContext } from '../core/telegram-bot.interface';
-
-export const validateId = (ctx: any, next: any) => {
-	const id = parseId(ctx.match[0]);
-	if (!id) {
-		ctx.reply('Не корректный id');
-	} else {
-		next();
-	}
-};
 
 type ContextWithMatch = TelegramBotMatchedContext<
 	SessionContext<{}> & { match: RegExpExecArray },

@@ -1,4 +1,4 @@
 export const CommonAction = {
-	start: 'start',
-	help: 'help',
+	Start: 'start',
+	Help: 'help',
 };

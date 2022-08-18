@@ -1,30 +1,43 @@
+import { Context } from 'telegraf';
 import { injectable } from 'inversify';
-import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
 import { CartAction } from './cart-actions';
+import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
 
 @injectable()
 export class CartHandler extends TelegramBotHandler {
 	constructor() {
 		super();
 
-		this.composer.command('cart', (ctx) => {
-			ctx.reply('Not implemented');
-		});
+		this.bindCommands([
+			{
+				name: CartAction.Cart,
+				handler: this.notImplemented.bind(this),
+			},
+		]);
 
-		this.composer.action(CartAction.AddBurgerToCart, (ctx) => {
-			ctx.reply('Not implemented');
-		});
+		this.bindActions([
+			{
+				name: CartAction.AddBurgerToCart,
+				handler: this.notImplemented.bind(this),
+			},
 
-		this.composer.action(CartAction.DeleteBurgerFromCart, (ctx) => {
-			ctx.reply('Not implemented');
-		});
+			{
+				name: CartAction.DeleteBurgerFromCart,
+				handler: this.notImplemented.bind(this),
+			},
 
-		this.composer.action(CartAction.AddDrinkToCart, (ctx) => {
-			ctx.reply('Not implemented');
-		});
+			{
+				name: CartAction.AddDrinkToCart,
+				handler: this.notImplemented.bind(this),
+			},
+			{
+				name: CartAction.DeleteDrinkFromCart,
+				handler: this.notImplemented.bind(this),
+			},
+		]);
+	}
 
-		this.composer.action(CartAction.DeleteDrinkFromCart, (ctx) => {
-			ctx.reply('Not implemented');
-		});
+	private async notImplemented(ctx: Context): Promise<void> {
+		ctx.reply('Not implemented');
 	}
 }

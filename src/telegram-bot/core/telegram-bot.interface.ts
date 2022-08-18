@@ -5,8 +5,3 @@ export interface ITelegramBot {
 	run(): Promise<void>;
 	stop(): void;
 }
-
-export type TelegramBotMatchedContext<
-	C extends Context,
-	T extends UpdateType | MessageSubType,
-> = NarrowedContext<C, MountMap[T]>;

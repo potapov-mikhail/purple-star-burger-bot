@@ -22,6 +22,8 @@ export class PrismaService implements IPrismaService {
 			if (e instanceof Error) {
 				this.loggerService.error('Error connecting to database: ' + e.message);
 			}
+
+			throw e;
 		}
 	}
 

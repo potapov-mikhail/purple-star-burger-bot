@@ -4,11 +4,11 @@ import { ProfileReplyService } from './profile-reply-service';
 import { TelegramBotSceneHandler } from '../core/telegram-bot-scene-handler/telegram-bot-scene-handler';
 import { ICityService } from '../../city/city.service.interface';
 import { SceneContext } from 'telegraf/typings/scenes';
-import { TelegramBotMatchedContext } from '../core/telegram-bot.interface';
 import { IUserService } from '../../user/user.service.interface';
 import { IAddressService } from '../../address/address.service.interface';
 import { CreateAddressDto } from '../../address/dto/create-address-dto';
 import { plainToClass } from 'class-transformer';
+import { TelegramBotMatchedContext } from '../core/telegram-bot-context.interface';
 
 interface IAddressEditoState {
 	step: number;

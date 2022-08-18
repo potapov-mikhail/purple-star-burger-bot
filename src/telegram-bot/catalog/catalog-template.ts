@@ -1,13 +1,3 @@
-import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
-
-export interface IReplyTemplate {
-	test: string;
-}
-
-export interface IReplyTemplateWithExtra extends IReplyTemplate {
-	exta: ExtraReplyMessage;
-}
-
 export interface IBurgerTemplateConfig {
 	id: number;
 	name: string;
