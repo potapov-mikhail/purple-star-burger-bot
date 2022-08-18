@@ -1,16 +1,16 @@
 import { inject, injectable } from 'inversify';
+import { plainToClass } from 'class-transformer';
 import { CommonAction } from './common-actions';
 import { CommonTemlate } from './common-template';
-import { DI_APP_TOKENS } from '../../common/di/tokens';
+import { APP_TOKENS } from '../../common/di/tokens';
 import { CreateUserDto } from '../../user/dto/create-user.dto';
 import { IUserService } from '../../user/user.service.interface';
-import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
-import { plainToClass } from 'class-transformer';
 import { TelegramBotCommandContext } from '../core/telegram-bot-context.interface';
+import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
 
 @injectable()
 export class CommonHandler extends TelegramBotHandler {
-	constructor(@inject(DI_APP_TOKENS.UserService) private userService: IUserService) {
+	constructor(@inject(APP_TOKENS.UserService) private userService: IUserService) {
 		super();
 
 		this.bindCommands([

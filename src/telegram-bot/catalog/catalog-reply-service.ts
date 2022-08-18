@@ -1,17 +1,17 @@
-import { inject, injectable } from 'inversify';
 import { Context } from 'telegraf';
-import { DI_APP_TOKENS } from '../../common/di/tokens';
-import { IPagination } from '../../common/types/pagination';
+import { inject, injectable } from 'inversify';
+import { APP_TOKENS } from '../../common/di/tokens';
 import { CatalogTemplate } from './catalog-template';
-import { IProductService } from '../../product/product.service.interface';
-import { PaginationTemplate } from '../templates/pagination-template';
-import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
 import { CatalogActionPrefix } from './catalog-actions';
 import { CartActionPrefix } from '../cart/cart-actions';
+import { IPagination } from '../../common/types/pagination';
+import { PaginationTemplate } from '../templates/pagination-template';
+import { IProductService } from '../../product/product.service.interface';
+import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
 
 @injectable()
 export class CatalogReplyService {
-	constructor(@inject(DI_APP_TOKENS.ProductService) private productService: IProductService) {}
+	constructor(@inject(APP_TOKENS.ProductService) private productService: IProductService) {}
 
 	async showBurgerList(ctx: Context, pagination: IPagination): Promise<void> {
 		const products = await this.productService.findAllBurgers(pagination);

@@ -1,14 +1,14 @@
 import { inject, injectable } from 'inversify';
-import { DI_APP_TOKENS } from '../../common/di/tokens';
+import { TG_BOT_TOKENS } from '../di/tokens';
+import { ProfileAction } from './profile-actions';
 import { ProfileReplyService } from './profile-reply-service';
 import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
-import { ProfileAction } from './profile-actions';
 import { TelegramBotCommandContext } from '../core/telegram-bot-context.interface';
 
 @injectable()
 export class ProfileHandler extends TelegramBotHandler {
 	constructor(
-		@inject(DI_APP_TOKENS.ProfileReplyService) private profileReplyService: ProfileReplyService,
+		@inject(TG_BOT_TOKENS.ProfileReplyService) private profileReplyService: ProfileReplyService,
 	) {
 		super();
 

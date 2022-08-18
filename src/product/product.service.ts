@@ -1,6 +1,6 @@
 import { Product } from '@prisma/client';
 import { inject, injectable } from 'inversify';
-import { DI_APP_TOKENS } from '../common/di/tokens';
+import { APP_TOKENS } from '../common/di/tokens';
 import { IPagination } from '../common/types/pagination';
 import { IProductService } from './product.service.interface';
 import { computePagination } from '../utils/compute-pagination';
@@ -12,7 +12,7 @@ const DRINKS_CATEGORY_ID = 3;
 @injectable()
 export class ProductService implements IProductService {
 	constructor(
-		@inject(DI_APP_TOKENS.ProductRepository) private productRepository: IProductRepository,
+		@inject(APP_TOKENS.ProductRepository) private productRepository: IProductRepository,
 	) {}
 
 	findAllBurgers(params: IPagination = { page: 1, limit: 10 }): Promise<Product[]> {

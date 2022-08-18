@@ -1,12 +1,12 @@
 import { City } from '@prisma/client';
 import { inject, injectable } from 'inversify';
-import { DI_APP_TOKENS } from '../common/di/tokens';
-import { ICityRepository } from './city.repository.interface';
+import { APP_TOKENS } from '../common/di/tokens';
 import { ICityService } from './city.service.interface';
+import { ICityRepository } from './city.repository.interface';
 
 @injectable()
 export class CityService implements ICityService {
-	constructor(@inject(DI_APP_TOKENS.CityRepository) private cityRepository: ICityRepository) {}
+	constructor(@inject(APP_TOKENS.CityRepository) private cityRepository: ICityRepository) {}
 
 	findAll(): Promise<City[]> {
 		return this.cityRepository.findMany({});

@@ -1,14 +1,15 @@
 import { inject, injectable } from 'inversify';
-import { DI_APP_TOKENS } from '../../common/di/tokens';
-import { ProfileReplyService } from './profile-reply-service';
-import { TelegramBotSceneHandler } from '../core/telegram-bot-scene-handler/telegram-bot-scene-handler';
-import { ICityService } from '../../city/city.service.interface';
-import { SceneContext } from 'telegraf/typings/scenes';
-import { IUserService } from '../../user/user.service.interface';
-import { IAddressService } from '../../address/address.service.interface';
-import { CreateAddressDto } from '../../address/dto/create-address-dto';
 import { plainToClass } from 'class-transformer';
+import { TG_BOT_TOKENS } from '../di/tokens';
+import { APP_TOKENS } from '../../common/di/tokens';
+import { SceneContext } from 'telegraf/typings/scenes';
+import { ProfileReplyService } from './profile-reply-service';
+import { ICityService } from '../../city/city.service.interface';
+import { IUserService } from '../../user/user.service.interface';
+import { CreateAddressDto } from '../../address/dto/create-address-dto';
+import { IAddressService } from '../../address/address.service.interface';
 import { TelegramBotMatchedContext } from '../core/telegram-bot-context.interface';
+import { TelegramBotSceneHandler } from '../core/telegram-bot-scene-handler/telegram-bot-scene-handler';
 
 interface IAddressEditoState {
 	step: number;
@@ -28,10 +29,10 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 	private scenario = new Map<number, IAddAddressScenarioStep>();
 
 	constructor(
-		@inject(DI_APP_TOKENS.CityService) private cityService: ICityService,
-		@inject(DI_APP_TOKENS.UserService) private userService: IUserService,
-		@inject(DI_APP_TOKENS.AddressService) private addressService: IAddressService,
-		@inject(DI_APP_TOKENS.ProfileReplyService) private profileReplyService: ProfileReplyService,
+		@inject(APP_TOKENS.CityService) private cityService: ICityService,
+		@inject(APP_TOKENS.UserService) private userService: IUserService,
+		@inject(APP_TOKENS.AddressService) private addressService: IAddressService,
+		@inject(TG_BOT_TOKENS.ProfileReplyService) private profileReplyService: ProfileReplyService,
 	) {
 		super('addAddress');
 		this.initScenarios();

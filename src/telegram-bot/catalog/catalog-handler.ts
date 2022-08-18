@@ -1,20 +1,20 @@
 import { inject, injectable } from 'inversify';
-import { DI_APP_TOKENS } from '../../common/di/tokens';
 import { parseId } from '../../utils/parse-id';
+import { TG_BOT_TOKENS } from '../di/tokens';
+import { CatalogAction } from './catalog-actions';
+import { ValidateMatchId } from '../middleware/validate-id';
+import { CatalogReplyService } from './catalog-reply-service';
+import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
 import {
 	TelegramBotActionContext,
 	TelegramBotCommandContext,
 	TelegramBotHeartContext,
 } from '../core/telegram-bot-context.interface';
-import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-handler';
-import { ValidateMatchId } from '../middleware/validate-id';
-import { CatalogAction } from './catalog-actions';
-import { CatalogReplyService } from './catalog-reply-service';
 
 @injectable()
 export class CatalogHandler extends TelegramBotHandler {
 	constructor(
-		@inject(DI_APP_TOKENS.ProductTelegramBotController)
+		@inject(TG_BOT_TOKENS.CatalogReplyService)
 		private readonly catalogReplyService: CatalogReplyService,
 	) {
 		super();

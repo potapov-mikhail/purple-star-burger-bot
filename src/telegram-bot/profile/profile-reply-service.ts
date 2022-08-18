@@ -1,15 +1,15 @@
-import { inject, injectable } from 'inversify';
 import { Context } from 'telegraf';
-import { IAddressService } from '../../address/address.service.interface';
-import { DI_APP_TOKENS } from '../../common/di/tokens';
-import { IUserService } from '../../user/user.service.interface';
+import { inject, injectable } from 'inversify';
+import { APP_TOKENS } from '../../common/di/tokens';
 import { ProfileTemplate } from './profile-template';
+import { IUserService } from '../../user/user.service.interface';
+import { IAddressService } from '../../address/address.service.interface';
 
 @injectable()
 export class ProfileReplyService {
 	constructor(
-		@inject(DI_APP_TOKENS.UserService) private userService: IUserService,
-		@inject(DI_APP_TOKENS.AddressService) private addressService: IAddressService,
+		@inject(APP_TOKENS.UserService) private userService: IUserService,
+		@inject(APP_TOKENS.AddressService) private addressService: IAddressService,
 	) {}
 
 	async showProfileCard(ctx: Context, tgId: number): Promise<void> {
