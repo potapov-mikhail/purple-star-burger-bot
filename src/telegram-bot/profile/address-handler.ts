@@ -1,3 +1,4 @@
+import { Context } from 'telegraf';
 import { inject, injectable } from 'inversify';
 import { plainToClass } from 'class-transformer';
 import { TG_BOT_TOKENS } from '../di/tokens';
@@ -34,36 +35,41 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 		@inject(APP_TOKENS.CityService) private cityService: ICityService,
 		@inject(APP_TOKENS.UserService) private userService: IUserService,
 		@inject(APP_TOKENS.AddressService) private addressService: IAddressService,
-		@inject(TG_BOT_TOKENS.ProfileReplyService) private profileReplyService: ProfileReplyService,
 	) {
 		super(ProfileScene.AddAddress);
 		this.initScenarios();
 
-		this.scene.enter((ctx) => {
-			this.setState<IAddressEditoState>(ctx, this.getInitialState());
-			const scenario = this.scenario.get(1);
-
-			if (scenario) {
-				ctx.reply(scenario.question);
-			}
-		});
-
-		this.scene.hears(ProfileScene.AddAddresCancel, async (ctx) => {
-			await ctx.reply('Вы покинули форму ввода адреса', {
-				reply_markup: {
-					remove_keyboard: true,
-				},
-			});
-			await ctx.scene.leave();
-		});
-
-		this.scene.on('text', async (ctx) => {
-			this.handleScenario(ctx);
-		});
+		this.bindHears([
+			{
+				name: ProfileScene.AddAddresCancel,
+				handler: this.cancel.bind(this),
+			},
+		]);
+		this.bindEnterHander(this.onEnter.bind(this));
+		this.bindTextHander(this.handleScenario.bind(this));
 	}
 
 	private getInitialState(): IAddressEditoState {
 		return { step: 1 };
+	}
+
+	private async onEnter(ctx: Context): Promise<void> {
+		this.setState<IAddressEditoState>(ctx, this.getInitialState());
+		const scenario = this.scenario.get(1);
+
+		if (scenario) {
+			ctx.reply(scenario.question);
+		}
+	}
+
+	private async cancel(ctx: any): Promise<void> {
+		await ctx.reply('☹️ Вы покинули форму ввода адреса', {
+			reply_markup: {
+				remove_keyboard: true,
+			},
+		});
+
+		await ctx.scene.leave();
 	}
 
 	private async handleScenario(

@@ -1,7 +1,15 @@
-import { Scenes } from 'telegraf';
+import { Context, Scenes } from 'telegraf';
 import { injectable, unmanaged } from 'inversify';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { ITelegramBotSceneHandler } from './telegram-bot-scene-handler.interface';
+import { ITelegramBotMiddlewate } from '../telegram-bot-middleware.interface';
+import { MatchedMiddleware } from 'telegraf/typings/composer';
+
+export interface ITelegramBotSceneHandlerHears {
+	name: RegExp | string;
+	handler: any;
+	middleware?: ITelegramBotMiddlewate;
+}
 
 @injectable()
 export class TelegramBotSceneHandler implements ITelegramBotSceneHandler {
@@ -21,5 +29,23 @@ export class TelegramBotSceneHandler implements ITelegramBotSceneHandler {
 
 	getState<T>(ctx: any): T {
 		return ctx.scene.session.state;
+	}
+
+	bindHears(hears: ITelegramBotSceneHandlerHears[]): void {
+		for (const hear of hears) {
+			const handlers: MatchedMiddleware<Context, 'text'> = hear.middleware
+				? [hear.middleware.execute, hear.handler]
+				: [hear.handler];
+
+			this.scene.hears(hear.name, ...handlers);
+		}
+	}
+
+	bindEnterHander(handler: any): void {
+		this.scene.enter(handler);
+	}
+
+	bindTextHander(handler: any): void {
+		this.scene.on('text', handler);
 	}
 }
