@@ -13,12 +13,9 @@ const prisma = new PrismaClient();
 type UserMock = Pick<User, 'name' | 'tgId'>;
 type ProductMock = Pick<Product, 'name' | 'description' | 'price'> & { categories: string[] };
 type CategoryMock = Pick<Category, 'name'>;
-
 type AddressMock = Pick<Address, 'city' | 'street' | 'house' | 'userId'>;
-
 type ProductOnCategoryMock = Pick<ProductOnCategory, 'categoryId' | 'productId'>;
-
-type OrderMock = Pick<Order, 'userId' | 'paid' | 'data'>;
+type OrderMock = Pick<Order, 'userId' | 'paid' | 'data' | 'totalPrice'>;
 
 const DEFAULT_USERS: UserMock[] = [
 	{ name: 'Михаил', tgId: 1 },
@@ -75,6 +72,7 @@ function getOrdersMocks(usersIds: number[] = []): OrderMock[] {
 			? {
 					userId,
 					paid: false,
+					totalPrice: 1049,
 					data: {
 						items: [
 							{ name: 'Бургер спайси блэк ангус', price: 929, count: 1 },
@@ -85,6 +83,7 @@ function getOrdersMocks(usersIds: number[] = []): OrderMock[] {
 			: {
 					userId,
 					paid: true,
+					totalPrice: 2158,
 					data: {
 						items: [
 							{ name: 'Бургер вип блэк ангус', price: 929, count: 2 },

@@ -59,11 +59,22 @@ CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
     "paid" BOOLEAN NOT NULL DEFAULT false,
     "data" JSONB NOT NULL,
+    "totalPrice" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "City" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "City_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
