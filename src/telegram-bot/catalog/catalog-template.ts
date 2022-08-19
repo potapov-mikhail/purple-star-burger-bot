@@ -23,10 +23,10 @@ export abstract class CatalogTemplate {
 	}
 
 	static getDrinkListItem(config: IBurgerTemplateConfig): string {
-		return `🥤*${config.name}* \n ${config.description} \n\n Цена: ${config.price} Р \n _Подробнее:_ /burger${config.id}`;
+		return `🥤*${config.name}* \n ${config.description} \n\n Цена: ${config.price} Р \n _Подробнее:_ /drink${config.id}`;
 	}
 
 	static getDrinkCard(config: IBurgerTemplateConfig): string {
-		return `🥤*${config.name}* \n ${config.description} \n\n Цена: ${config.price} Р \n _Подробнее:_ /burger${config.id}`;
+		return `🥤*${config.name}* \n ${config.description} \n\n Цена: ${config.price} Р \n _Подробнее:_ /drink${config.id}`;
 	}
 }

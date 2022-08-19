@@ -19,7 +19,6 @@ export class ProductService implements IProductService {
 	findAllBurgers(params: IPagination = { page: 1, limit: DEFAULT_LIST_LIMIT }): Promise<Product[]> {
 		const { skip, take } = computePagination(params.page, params.limit);
 
-		console.log(skip, take);
 		return this.productRepository.findMany({
 			where: { ProductOnCategory: { some: { categoryId: BURGER_CATEGORY_ID } } },
 			skip,

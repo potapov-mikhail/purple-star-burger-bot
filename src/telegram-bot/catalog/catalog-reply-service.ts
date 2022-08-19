@@ -19,7 +19,7 @@ export class CatalogReplyService {
 		const markup = PaginationTemplate.getPaginationMarkupTemplate(
 			pagination.page,
 			CatalogActionPrefix.burgerChangePage,
-			false,
+			products.length < pagination.limit,
 		);
 
 		if (template) {
@@ -35,7 +35,7 @@ export class CatalogReplyService {
 		const markup = PaginationTemplate.getPaginationMarkupTemplate(
 			pagination.page,
 			CatalogActionPrefix.drinkChangePage,
-			false,
+			products.length < pagination.limit,
 		);
 
 		if (template) {

@@ -1,6 +1,6 @@
 export const ProfileAction = {
 	Profile: 'profile',
-	AddAddress: 'addAddress',
+	AddAddress: 'addaddress',
 };
 
 export const ProfileScene = {

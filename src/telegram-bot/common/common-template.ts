@@ -1,3 +1,5 @@
+import { TELEGRAM_BOT_COMMANDS } from '../telegram-bot-commands-list';
+
 export abstract class CommonTemlate {
 	static getWelcomeGreeting(name: string): string {
 		return `👋Добро пожаловать ${name}!\nПроголодались? Мы готовы вас накорить!`;
@@ -12,6 +14,8 @@ export abstract class CommonTemlate {
 	}
 
 	static getHelp(): string {
-		return `/burgers - Список бургеров\n/drinks - Список напитков\n/profile - Карточка профиля\n/addAddress - Добавить новый адрес`;
+		return TELEGRAM_BOT_COMMANDS.map(
+			(command) => `/${command.command} - ${command.description}`,
+		).join('\n');
 	}
 }

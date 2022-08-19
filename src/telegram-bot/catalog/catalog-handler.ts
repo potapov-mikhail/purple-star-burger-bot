@@ -11,6 +11,8 @@ import {
 	TelegramBotHeartContext,
 } from '../core/telegram-bot-context.interface';
 
+const DEFAULT_LIMIT = 5;
+
 @injectable()
 export class CatalogHandler extends TelegramBotHandler {
 	constructor(
@@ -56,23 +58,23 @@ export class CatalogHandler extends TelegramBotHandler {
 	}
 
 	private async showBurgerList(ctx: TelegramBotCommandContext): Promise<void> {
-		this.catalogReplyService.showBurgerList(ctx, { page: 1, limit: 1 });
+		this.catalogReplyService.showBurgerList(ctx, { page: 1, limit: DEFAULT_LIMIT });
 	}
 
 	private async showDrinkList(ctx: TelegramBotCommandContext): Promise<void> {
-		this.catalogReplyService.showDrinksList(ctx, { page: 1, limit: 1 });
+		this.catalogReplyService.showDrinksList(ctx, { page: 1, limit: DEFAULT_LIMIT });
 	}
 
 	private async burgerChangePage(ctx: TelegramBotActionContext): Promise<void> {
 		const match = ctx.match[0];
 		const page = Number(match.split('-')[1]);
-		this.catalogReplyService.showBurgerList(ctx, { page, limit: 1 }, true);
+		this.catalogReplyService.showBurgerList(ctx, { page, limit: DEFAULT_LIMIT }, true);
 	}
 
 	private async drinkChangePage(ctx: TelegramBotActionContext): Promise<void> {
 		const match = ctx.match[0];
 		const page = Number(match.split('-')[1]);
-		this.catalogReplyService.showDrinksList(ctx, { page, limit: 1 }, true);
+		this.catalogReplyService.showDrinksList(ctx, { page, limit: DEFAULT_LIMIT }, true);
 	}
 
 	private async showBurgerCard(ctx: TelegramBotHeartContext): Promise<void> {
