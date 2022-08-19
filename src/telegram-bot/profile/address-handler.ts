@@ -61,7 +61,10 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 	}
 
 	private async cancel(ctx: TelegramBotScentCtx): Promise<void> {
-		await this.removeKeyBoard(ctx, '☹️ Вы покинули форму ввода адреса');
+		await this.removeKeyBoard(
+			ctx,
+			'☹️ Вы покинули форму ввода адреса. Вы можете добавить его позже',
+		);
 		await this.leave(ctx);
 	}
 
