@@ -1,20 +1,20 @@
-import { Context } from 'telegraf';
+import { Markup } from 'telegraf';
 import { inject, injectable } from 'inversify';
 import { plainToClass } from 'class-transformer';
-import { TG_BOT_TOKENS } from '../di/tokens';
 import { ProfileScene } from './profile-actions';
 import { APP_TOKENS } from '../../common/di/tokens';
-import { SceneContext } from 'telegraf/typings/scenes';
 import { CommonTemlate } from '../common/common-template';
-import { ProfileReplyService } from './profile-reply-service';
 import { ICityService } from '../../city/city.service.interface';
 import { IUserService } from '../../user/user.service.interface';
 import { CreateAddressDto } from '../../address/dto/create-address-dto';
 import { IAddressService } from '../../address/address.service.interface';
-import { TelegramBotMatchedContext } from '../core/telegram-bot-context.interface';
+import {
+	TelegramBotScentCtx,
+	TelegramBotTextSceneCtx,
+} from '../core/telegram-bot-context.interface';
 import { TelegramBotSceneHandler } from '../core/telegram-bot-scene-handler/telegram-bot-scene-handler';
 
-interface IAddressEditoState {
+interface IAddAddressState {
 	step: number;
 	city?: string;
 	street?: string;
@@ -45,64 +45,51 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 				handler: this.cancel.bind(this),
 			},
 		]);
-		this.bindEnterHander(this.onEnter.bind(this));
+		this.bindEnterHanders(this.onEnter.bind(this));
 		this.bindTextHander(this.handleScenario.bind(this));
 	}
 
-	private getInitialState(): IAddressEditoState {
-		return { step: 1 };
-	}
-
-	private async onEnter(ctx: Context): Promise<void> {
-		this.setState<IAddressEditoState>(ctx, this.getInitialState());
+	private async onEnter(ctx: TelegramBotScentCtx): Promise<void> {
+		this.setState<IAddAddressState>(ctx, this.getInitialState());
 		const scenario = this.scenario.get(1);
 
 		if (scenario) {
-			ctx.reply(scenario.question);
+			await this.replyTextWithCancelMarkup(ctx, scenario.question);
+		} else {
+			await this.leave(ctx);
 		}
 	}
 
-	private async cancel(ctx: any): Promise<void> {
-		await ctx.reply('☹️ Вы покинули форму ввода адреса', {
-			reply_markup: {
-				remove_keyboard: true,
-			},
-		});
-
-		await ctx.scene.leave();
+	private async cancel(ctx: TelegramBotScentCtx): Promise<void> {
+		await this.removeKeyBoard(ctx, '☹️ Вы покинули форму ввода адреса');
+		await this.leave(ctx);
 	}
 
-	private async handleScenario(
-		ctx: TelegramBotMatchedContext<SceneContext, 'text'>,
-	): Promise<void> {
+	private async handleScenario(ctx: TelegramBotTextSceneCtx): Promise<void> {
 		const answer = ctx.message.text;
-		const state = this.getState<IAddressEditoState>(ctx);
-		const currentScenario = this.scenario.get(state.step);
+		const state = this.getState<IAddAddressState>(ctx);
+		const currentScenario = this.scenario.get(state?.step || -1);
 
-		if (!currentScenario) {
-			// Что то пошло не так, логируем
-			ctx.scene.leave();
+		if (!state || !currentScenario) {
+			this.leave(ctx);
 			return;
 		}
 
 		if (currentScenario.validation) {
 			const error = await currentScenario.validation(answer);
+
 			if (error) {
-				await ctx.reply(error, {
-					reply_markup: {
-						keyboard: [[{ text: ProfileScene.AddAddresCancel }]],
-					},
-				});
+				await this.replyTextWithCancelMarkup(ctx, error);
 				return;
 			}
 		}
 
 		const nextStep = state.step + 1;
 		const nextScenario = this.scenario.get(nextStep);
-		this.patchState<IAddressEditoState>(ctx, { [currentScenario.key]: answer, step: nextStep });
+		this.patchState<IAddAddressState>(ctx, { [currentScenario.key]: answer, step: nextStep });
 
 		if (nextScenario) {
-			await ctx.reply(nextScenario.question);
+			await this.replyTextWithCancelMarkup(ctx, nextScenario.question);
 		} else {
 			const { city, street, house } = state;
 
@@ -115,9 +102,10 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 
 				await ctx.reply('🔥 Огонь! Мы доставляем по вашему адресу');
 				await ctx.reply(CommonTemlate.getHelp());
-				await ctx.scene.leave();
+				await this.leave(ctx);
 			} else {
-				ctx.reply('Что то пошло не так попробуйте еще раз');
+				await ctx.reply('Что то пошло не так попробуйте еще раз');
+				await this.leave(ctx);
 			}
 		}
 	}
@@ -128,16 +116,23 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 	): Promise<void> {
 		const user = await this.userService.findByTgId(tgId);
 
-		if (user) {
-			const address = plainToClass(CreateAddressDto, {
-				userId: user.id,
-				city: addressParams.city,
-				street: addressParams.street,
-				house: addressParams.house,
-			});
-
-			await this.addressService.create(address);
+		if (!user) {
+			throw new Error('A user is required to create an address');
 		}
+
+		const address = plainToClass(CreateAddressDto, {
+			userId: user.id,
+			city: addressParams.city,
+			street: addressParams.street,
+			house: addressParams.house,
+		});
+
+		await this.addressService.create(address);
+	}
+
+	private async replyTextWithCancelMarkup(ctx: TelegramBotScentCtx, text: string): Promise<void> {
+		const markup = Markup.keyboard([[{ text: ProfileScene.AddAddresCancel }]]).resize();
+		await ctx.reply(text, markup);
 	}
 
 	private initScenarios(): void {
@@ -166,5 +161,9 @@ export class AddAddressHandler extends TelegramBotSceneHandler {
 			key: 'house',
 			question: 'Введите номер дома',
 		});
+	}
+
+	private getInitialState(): IAddAddressState {
+		return { step: 1 };
 	}
 }

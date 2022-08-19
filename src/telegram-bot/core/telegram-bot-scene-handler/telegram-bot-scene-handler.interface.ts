@@ -1,13 +1,14 @@
-import { Scenes } from 'telegraf';
-import { SceneContext } from 'telegraf/typings/scenes';
+import { Middleware, Scenes } from 'telegraf';
+import { TelegramBotScentCtx, TelegramBotTextSceneCtx } from '../telegram-bot-context.interface';
 import { ITelegramBotSceneHandlerHears } from './telegram-bot-scene-handler';
 
 export interface ITelegramBotSceneHandler {
-	readonly scene: Scenes.BaseScene<SceneContext>;
-	setState<T extends Record<string, unknown>>(ctx: any, state: T): void;
-	patchState<T extends Record<string, unknown>>(ctx: any, state: T): void;
-	getState<T extends Record<string, unknown>>(ctx: any): T;
+	readonly scene: Scenes.BaseScene<TelegramBotScentCtx>;
+	setState<T extends Record<string, unknown>>(ctx: TelegramBotScentCtx, state: T): void;
+	patchState<T extends Record<string, unknown>>(ctx: TelegramBotScentCtx, state: T): void;
+	getState<T extends Record<string, unknown>>(ctx: TelegramBotScentCtx): T | undefined;
+
 	bindHears(hears: ITelegramBotSceneHandlerHears[]): void;
-	bindEnterHander(handler: any): void;
-	bindTextHander(handler: any): void;
+	bindTextHander(handler: Middleware<TelegramBotTextSceneCtx>): void;
+	bindEnterHanders(...handlers: Array<Middleware<TelegramBotScentCtx>>): void;
 }
