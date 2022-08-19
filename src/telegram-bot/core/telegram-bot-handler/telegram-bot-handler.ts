@@ -1,8 +1,7 @@
 import { injectable } from 'inversify';
 import { Composer, Context, Middleware } from 'telegraf';
-import { MatchedMiddleware } from 'telegraf/typings/composer';
 import { Update } from 'telegraf/typings/core/types/typegram';
-import { SessionContext } from 'telegraf/typings/session';
+import { TelegramBotSessionCtx } from '../telegram-bot-context.interface';
 import {
 	ITelegramBotHandler,
 	ITelegramBotHandlerAction,
@@ -20,36 +19,39 @@ export class TelegramBotHandler implements ITelegramBotHandler {
 
 	bindCommands(commands: ITelegramBotHandlerCommand[]): void {
 		for (const command of commands) {
-			const handlers: MatchedMiddleware<Context, 'text'> = command.middleware
-				? [command.middleware.execute, command.handler]
-				: [command.handler];
-
-			//@ts-ignore
-			this.composer.command(command.name, ...handlers);
+			if (!command.middleware) {
+				this.composer.command(command.name, command.handler);
+			} else {
+				this.composer.command(command.name, command.middleware.execute, command.handler);
+			}
 		}
 	}
 
 	bindActions(actions: ITelegramBotHandlerAction[]): void {
 		for (const action of actions) {
-			const handlers: MatchedMiddleware<Context, 'callback_query'> = action.middleware
-				? [action.middleware.execute, action.handler]
-				: [action.handler];
-
-			this.composer.action(action.name, ...handlers);
+			if (!action.middleware) {
+				this.composer.action(action.name, action.handler);
+			} else {
+				this.composer.action(action.name, action.middleware.execute, action.handler);
+			}
 		}
 	}
 
 	bindHears(hears: ITelegramBotHandlerHears[]): void {
 		for (const hear of hears) {
-			const handlers: MatchedMiddleware<Context, 'text'> = hear.middleware
-				? [hear.middleware.execute, hear.handler]
-				: [hear.handler];
-
-			this.composer.hears(hear.name, ...handlers);
+			if (!hear.middleware) {
+				this.composer.hears(hear.name, hear.handler);
+			} else {
+				this.composer.hears(hear.name, hear.middleware.execute, hear.handler);
+			}
 		}
 	}
 
-	setState<T extends object>(ctx: SessionContext<object>, state: T, path: string[] = []): void {
+	setState<T extends Record<string, unknown>>(
+		ctx: TelegramBotSessionCtx,
+		state: T,
+		path: string[] = [],
+	): void {
 		if (typeof ctx.session !== 'object') {
 			ctx.session = {};
 		}
@@ -67,13 +69,16 @@ export class TelegramBotHandler implements ITelegramBotHandler {
 		Object.assign(current, state);
 	}
 
-	getState<T extends object>(ctx: SessionContext<object>, path: string[] = []): T | undefined {
+	getState<T extends Record<string, unknown>>(
+		ctx: TelegramBotSessionCtx,
+		path: string[] = [],
+	): T | undefined {
 		const keys = path.concat();
 		let key = keys.shift();
-		let state = ctx.session;
+		let state = ctx.session as any;
 
 		while (typeof state === 'object' && key) {
-			state = (state as any)[key];
+			state = state[key];
 			key = keys.shift();
 		}
 

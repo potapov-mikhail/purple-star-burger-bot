@@ -24,4 +24,11 @@ export type TelegramBotActionContext<S extends object = object> = TelegramBotMat
 >;
 
 export type TelegramBotScentCtx = SceneContext;
-export type TelegramBotTextSceneCtx = TelegramBotMatchedContext<SceneContext, 'text'>;
+export type TelegramBotTextSceneCtx = TelegramBotMatchedContext<TelegramBotScentCtx, 'text'>;
+
+export type TelegramBotSessionCtx = SessionContext<object>;
+export type TelegramBotTextSessionCtx = TelegramBotMatchedContext<TelegramBotSessionCtx, 'text'>;
+export type TelegramBotCQSessionCtx = TelegramBotMatchedContext<
+	TelegramBotSessionCtx,
+	'callback_query'
+>;

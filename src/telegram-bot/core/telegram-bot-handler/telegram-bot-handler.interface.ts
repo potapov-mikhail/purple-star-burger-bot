@@ -1,22 +1,26 @@
 import { Context, Middleware } from 'telegraf';
-import { SessionContext } from 'telegraf/typings/session';
+import {
+	TelegramBotCQSessionCtx,
+	TelegramBotSessionCtx,
+	TelegramBotTextSessionCtx,
+} from '../telegram-bot-context.interface';
 import { ITelegramBotMiddlewate } from '../telegram-bot-middleware.interface';
 
 export interface ITelegramBotHandlerCommand {
 	name: string;
-	handler: any;
+	handler: (ctx: TelegramBotTextSessionCtx) => Promise<void>;
 	middleware?: ITelegramBotMiddlewate;
 }
 
 export interface ITelegramBotHandlerAction {
 	name: RegExp;
-	handler: any;
+	handler: (ctx: TelegramBotCQSessionCtx) => Promise<void>;
 	middleware?: ITelegramBotMiddlewate;
 }
 
 export interface ITelegramBotHandlerHears {
 	name: RegExp;
-	handler: any;
+	handler: (ctx: TelegramBotTextSessionCtx) => Promise<void>;
 	middleware?: ITelegramBotMiddlewate;
 }
 
@@ -24,8 +28,16 @@ export interface ITelegramBotHandler<C extends Context = Context> {
 	middleware(): Middleware<C>;
 	bindCommands?(commands: ITelegramBotHandlerCommand[]): void;
 	bindActions?(actions: ITelegramBotHandlerAction[]): void;
-	bindHears?(actions: ITelegramBotHandlerHears[]): void;
+	bindHears?(hears: ITelegramBotHandlerHears[]): void;
 
-	setState<T extends object>(ctx: SessionContext<object>, state: T, path: string[]): void;
-	getState<T extends object>(ctx: SessionContext<object>, path: string[]): T | undefined;
+	setState<T extends Record<string, unknown>>(
+		ctx: TelegramBotSessionCtx,
+		state: T,
+		path: string[],
+	): void;
+
+	getState<T extends Record<string, unknown>>(
+		ctx: TelegramBotSessionCtx,
+		path: string[],
+	): T | undefined;
 }

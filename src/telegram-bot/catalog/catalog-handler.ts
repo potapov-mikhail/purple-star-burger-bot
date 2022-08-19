@@ -8,7 +8,8 @@ import { TelegramBotHandler } from '../core/telegram-bot-handler/telegram-bot-ha
 import {
 	TelegramBotActionContext,
 	TelegramBotCommandContext,
-	TelegramBotHeartContext,
+	TelegramBotCQSessionCtx,
+	TelegramBotTextSessionCtx,
 } from '../core/telegram-bot-context.interface';
 
 const DEFAULT_LIMIT = 5;
@@ -65,8 +66,10 @@ export class CatalogHandler extends TelegramBotHandler {
 		this.catalogReplyService.showDrinksList(ctx, { page: 1, limit: DEFAULT_LIMIT });
 	}
 
-	private async burgerChangePage(ctx: TelegramBotActionContext): Promise<void> {
-		const match = ctx.match[0];
+	private async burgerChangePage(ctx: TelegramBotCQSessionCtx): Promise<void> {
+		const match = (ctx as unknown as TelegramBotTextSessionCtx & { match: RegExpExecArray })
+			.match[0];
+
 		const page = Number(match.split('-')[1]);
 		this.catalogReplyService.showBurgerList(ctx, { page, limit: DEFAULT_LIMIT }, true);
 	}
@@ -77,17 +80,17 @@ export class CatalogHandler extends TelegramBotHandler {
 		this.catalogReplyService.showDrinksList(ctx, { page, limit: DEFAULT_LIMIT }, true);
 	}
 
-	private async showBurgerCard(ctx: TelegramBotHeartContext): Promise<void> {
-		const id = this.getIdFromCtx(ctx);
+	private async showBurgerCard(ctx: TelegramBotTextSessionCtx): Promise<void> {
+		const id = this.getIdFromCtx(ctx as TelegramBotTextSessionCtx & { match: RegExpExecArray });
 		this.catalogReplyService.showBurgerCard(ctx, id);
 	}
 
-	private async showDrinkCard(ctx: TelegramBotHeartContext): Promise<void> {
-		const id = this.getIdFromCtx(ctx);
+	private async showDrinkCard(ctx: TelegramBotTextSessionCtx): Promise<void> {
+		const id = this.getIdFromCtx(ctx as TelegramBotTextSessionCtx & { match: RegExpExecArray });
 		this.catalogReplyService.showDrinkCard(ctx, id);
 	}
 
-	private getIdFromCtx(ctx: TelegramBotHeartContext): number {
+	private getIdFromCtx(ctx: TelegramBotTextSessionCtx & { match: RegExpExecArray }): number {
 		return parseId(ctx.match[0])!;
 	}
 }
