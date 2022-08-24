@@ -1,0 +1,30 @@
+import { Markup } from 'telegraf';
+import { IPagination } from '../services/product.service';
+import { ProductEntity } from '../entities/product.entity';
+import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
+import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
+
+export abstract class MarkupTemplate {
+	static getPagination(pagination: IPagination, prefix: string): ExtraReplyMessage {
+		const buttons: InlineKeyboardButton[] = [];
+
+		if (pagination.total === 0) {
+			return Markup.inlineKeyboard(buttons);
+		}
+
+		if (pagination.page !== 1) {
+			buttons.push({ text: '< Назад', callback_data: `${prefix}-${pagination.page - 1}` });
+		}
+
+		if (pagination.page !== pagination.total) {
+			buttons.push({ text: 'Вперед >', callback_data: `${prefix}-${pagination.page + 1}` });
+		}
+
+		return Markup.inlineKeyboard([buttons]);
+	}
+
+	static getProductOptions(product: ProductEntity): ExtraReplyMessage {
+		const buttons = [{ text: `Добавить в корзину`, callback_data: `addToCart-${product.id}` }];
+		return Markup.inlineKeyboard([buttons]);
+	}
+}

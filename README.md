@@ -28,6 +28,12 @@ Run seed script for filing database with dummy data on its initialization
 npx prisma db seed
 ```
 
+Run prisma studio
+
+```
+npx prisma studio
+```
+
 ## Usage
 
 Run project in development mode
