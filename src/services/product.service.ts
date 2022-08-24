@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { Product, ProductType } from '@prisma/client';
+import { Product, ProductCategory } from '@prisma/client';
 import { APP_TOKENS } from '../container/tokens';
 import { IPrismaService } from '../common/database/prisma.interface';
 
@@ -22,15 +22,15 @@ export class ProductService {
 		return this.prismaService.client.product.findUnique({ where: { id } });
 	}
 
-	async getProductsByType(
-		type: ProductType,
+	async getProductsByCategory(
+		category: ProductCategory,
 		page: number,
 		limit = 5,
 	): Promise<IDataWithPagination<Product>> {
 		const [total, items] = await this.prismaService.client.$transaction([
-			this.prismaService.client.product.count({ where: { type } }),
+			this.prismaService.client.product.count({ where: { category } }),
 			this.prismaService.client.product.findMany({
-				where: { type },
+				where: { category },
 				skip: (page - 1) * limit,
 				take: limit,
 			}),

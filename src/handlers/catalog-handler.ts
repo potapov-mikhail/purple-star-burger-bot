@@ -1,4 +1,4 @@
-import { ProductType } from '@prisma/client';
+import { ProductCategory } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 import { APP_TOKENS } from '../container/tokens';
 import { TGNotFound } from '../errors/tg-not-found';
@@ -60,8 +60,8 @@ export class CatalogHandler extends TelegramBotHandler {
 		);
 	}
 
-	async getProductListView(type: ProductType, page: number): Promise<ITelegramBotExtraView> {
-		const { items, pagination } = await this.productService.getProductsByType(type, page);
+	async getProductListView(type: ProductCategory, page: number): Promise<ITelegramBotExtraView> {
+		const { items, pagination } = await this.productService.getProductsByCategory(type, page);
 		const trigger = type === 'Burger' ? TG_TRIGGERS.BurgerChangePage : TG_TRIGGERS.DrinkChangePage;
 		const template = ProductTemplate.getProductList(items);
 		const extra = MarkupTemplate.getPagination(pagination, trigger.prefix);
@@ -73,7 +73,7 @@ export class CatalogHandler extends TelegramBotHandler {
 		return id ? Number(id) : null;
 	}
 
-	private getProductListParams(str: string): { page: number; type: ProductType } {
+	private getProductListParams(str: string): { page: number; type: ProductCategory } {
 		const [prefix, page] = str.split('-');
 		const type = prefix === TG_TRIGGERS.BurgerChangePage.prefix ? 'Burger' : 'Drink';
 		return { type, page: Number(page) };

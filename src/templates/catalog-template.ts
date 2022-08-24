@@ -1,4 +1,4 @@
-import { ProductType } from '@prisma/client';
+import { ProductCategory } from '@prisma/client';
 import { ProductEntity } from '../entities/product.entity';
 import { TG_TRIGGERS } from '../telegram-bot/telegram-bot-triggers';
 
@@ -13,16 +13,16 @@ export abstract class ProductTemplate {
 	}
 
 	static getProductCard(product: ProductEntity, short = false): string {
-		const title = `${ProductTemplate.getProductIcon(product.type)}*${product.name}*`;
+		const title = `${ProductTemplate.getProductIcon(product.category)}*${product.name}*`;
 		const body = `\n${product.description}\n`;
 		const linkPrefix =
-			product.type === 'Burger' ? TG_TRIGGERS.BurgerCard.prefix : TG_TRIGGERS.DrinkCard.prefix;
+			product.category === 'Burger' ? TG_TRIGGERS.BurgerCard.prefix : TG_TRIGGERS.DrinkCard.prefix;
 		const footer = `\n Цена: ${product.price} Р\n _Подробнее:_ /${linkPrefix}${product.id}`;
 
 		return `${title}${short ? '' : body}${footer}`;
 	}
 
-	static getProductIcon(type: ProductType): string {
+	static getProductIcon(type: ProductCategory): string {
 		switch (type) {
 			case 'Burger':
 				return '🍔';

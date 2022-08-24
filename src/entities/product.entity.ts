@@ -1,11 +1,11 @@
-import { ProductType } from '@prisma/client';
+import { ProductCategory } from '@prisma/client';
 
 interface ProductParams {
 	id?: number;
 	name: string;
 	description: string;
 	price: number;
-	type: ProductType;
+	category: ProductCategory;
 }
 
 export class ProductEntity {
@@ -13,13 +13,13 @@ export class ProductEntity {
 	name: string;
 	description: string;
 	price: number;
-	type: ProductType;
+	category: ProductCategory;
 
 	constructor(params: ProductParams) {
 		this.id = params.id;
 		this.name = params.name;
 		this.description = params.description;
 		this.price = params.price;
-		this.type = params.type;
+		this.category = params.category;
 	}
 }
