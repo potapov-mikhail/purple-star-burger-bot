@@ -37,7 +37,7 @@ export class TelegramBot implements ITelegramBot {
 		this.telegraf = new Telegraf<ITgContext>(token);
 		this.telegraf.use(new LocalSession({ database: `${sessionDatabase}.session_db.json` }));
 		this.telegraf.use(this.handlerManager.middleware());
-		this.telegraf.catch(this.exceptionFilter.catch);
+		this.telegraf.catch(this.exceptionFilter.catch.bind(this.exceptionFilter));
 		this.telegraf.on('message', (ctx) => {
 			ctx.reply(CommonTemplate.getUndefinedCommand());
 		});
