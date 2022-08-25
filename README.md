@@ -1,5 +1,10 @@
 # Purple Star Burger Bot
 
+## Before started
+
+We use https://dadata.ru/ for recognize addresses.
+Therefore, you will need to register and get a token and secret.
+
 ## Getting started
 
 Clone this project and run installation
@@ -9,6 +14,10 @@ npm ci
 ```
 
 Create .env file (from .env.example) and fill it.
+
+```
+cp .env.example .env
+```
 
 If you are using docker, you can use docker-compose.dev for development.
 
