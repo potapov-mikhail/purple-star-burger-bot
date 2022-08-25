@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { inject, injectable } from 'inversify';
-import { APP_TOKENS } from '../container/tokens';
-import { IConfigService } from '../common/config/config.interface';
+import { APP_TOKENS } from '../../container/tokens';
+import { IConfigService } from '../../common/config/config.interface';
 
 interface ILocation {
 	latitude: number;

@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Product, ProductCategory } from '@prisma/client';
-import { APP_TOKENS } from '../container/tokens';
-import { IPrismaService } from '../common/database/prisma.interface';
+import { APP_TOKENS } from '../../container/tokens';
+import { IPrismaService } from '../../common/database/prisma.interface';
 
 export interface IPagination {
 	page: number;

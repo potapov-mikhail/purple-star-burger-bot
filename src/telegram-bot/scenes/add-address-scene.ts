@@ -1,11 +1,12 @@
 import { Markup } from 'telegraf';
 import { inject, injectable } from 'inversify';
-import { TelegramBotSceneHandler } from '../common/telegram-bot-scene-handler/telegram-bot-scene-handler';
-import { APP_TOKENS } from '../container/tokens';
-import { DaDataService } from '../services/dadata.service';
-import { UserService } from '../services/user.service';
-import { TG_SCENES } from '../telegram-bot/telegram-bot-triggers';
+
+import { APP_TOKENS } from '../../container/tokens';
+import { DaDataService } from '../../domains/dadata/dadata.service';
+import { UserService } from '../../domains/user/user.service';
+import { TG_SCENES } from '../telegram-bot-triggers';
 import { CommonTemplate } from '../templates/common-template';
+import { TelegramBotSceneHandler } from '../common/telegram-bot-scene-handler/telegram-bot-scene-handler';
 import { ITgContext } from '../common/telegram-bot.interface';
 
 interface IState {

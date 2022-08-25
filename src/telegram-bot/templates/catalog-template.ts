@@ -1,6 +1,6 @@
 import { ProductCategory } from '@prisma/client';
-import { ProductEntity } from '../entities/product.entity';
-import { TG_TRIGGERS } from '../telegram-bot/telegram-bot-triggers';
+import { ProductEntity } from '../../domains/product/product.entity';
+import { TG_TRIGGERS } from '../telegram-bot-triggers';
 
 export abstract class ProductTemplate {
 	static getProductList(products: ProductEntity[] = []): string {

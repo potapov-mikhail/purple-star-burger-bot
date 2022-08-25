@@ -1,9 +1,9 @@
 import { Address, User } from '@prisma/client';
 import { inject, injectable } from 'inversify';
-import { APP_TOKENS } from '../container/tokens';
-import { UserEntity } from '../entities/user.entity';
-import { AddressEntity } from '../entities/address.entity';
-import { IPrismaService } from '../common/database/prisma.interface';
+import { APP_TOKENS } from '../../container/tokens';
+import { UserEntity } from './user.entity';
+import { AddressEntity } from '../address/address.entity';
+import { IPrismaService } from '../../common/database/prisma.interface';
 
 @injectable()
 export class UserService {

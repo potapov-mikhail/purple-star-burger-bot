@@ -14,6 +14,10 @@ export interface ITgHandler<C extends ITgContext = ITgContext> {
 	middleware(): Middleware<C>;
 }
 
+export interface ITgExceptionFilter {
+	catch: (err: unknown, ctx: ITgContext) => void;
+}
+
 export interface ITelegramBotExtraView {
 	template: string;
 	extra: ExtraReplyMessage;

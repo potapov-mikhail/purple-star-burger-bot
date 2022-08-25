@@ -2,13 +2,17 @@ import { Telegraf } from 'telegraf';
 import { inject, injectable } from 'inversify';
 import LocalSession from 'telegraf-session-local';
 import { APP_TOKENS } from '../container/tokens';
-import { CommonTemplate } from '../templates/common-template';
+import { CommonTemplate } from './templates/common-template';
 import { TELEGRAM_BOT_COMMANDS } from './telegram-bot-triggers';
 import { IConfigService } from '../common/config/config.interface';
 import { ILoggerService } from '../common/logger/logger.interface';
 import { BotCommand } from 'telegraf/typings/core/types/typegram';
-import { IExceptionFilter } from '../errors/exception.filter.interface';
-import { IHandlerManager, ITelegramBot, ITgContext } from '../common/telegram-bot.interface';
+import {
+	IHandlerManager,
+	ITelegramBot,
+	ITgContext,
+	ITgExceptionFilter,
+} from './common/telegram-bot.interface';
 
 const REQUIRED_ENV_VARS = [
 	'DATABASE_URL',
@@ -26,7 +30,7 @@ export class TelegramBot implements ITelegramBot {
 		@inject(APP_TOKENS.ConfigService) private readonly configService: IConfigService,
 		@inject(APP_TOKENS.LoggerService) private readonly loggerService: ILoggerService,
 		@inject(APP_TOKENS.HandlerManager) private readonly handlerManager: IHandlerManager,
-		@inject(APP_TOKENS.ExceptionFilter) private readonly exceptionFilter: IExceptionFilter,
+		@inject(APP_TOKENS.ExceptionFilter) private readonly exceptionFilter: ITgExceptionFilter,
 	) {
 		this.configService.check(REQUIRED_ENV_VARS);
 		this.loggerService.setPrefix(this.constructor.name);

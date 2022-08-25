@@ -1,9 +1,9 @@
 import { inject, injectable } from 'inversify';
-import { APP_TOKENS } from '../container/tokens';
+import { APP_TOKENS } from '../../container/tokens';
 import { TGError } from '../errors/tg-error.class';
-import { UserService } from '../services/user.service';
+import { UserService } from '../../domains/user/user.service';
 import { ProfileTemplate } from '../templates/profile-template';
-import { TG_SCENES, TG_TRIGGERS } from '../telegram-bot/telegram-bot-triggers';
+import { TG_SCENES, TG_TRIGGERS } from '../telegram-bot-triggers';
 import { TelegramBotHandler } from '../common/telegram-bot-handler/telegram-bot-handler';
 
 @injectable()

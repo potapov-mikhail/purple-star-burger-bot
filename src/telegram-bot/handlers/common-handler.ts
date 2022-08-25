@@ -1,9 +1,9 @@
 import { inject, injectable } from 'inversify';
-import { APP_TOKENS } from '../container/tokens';
-import { UserEntity } from '../entities/user.entity';
-import { UserService } from '../services/user.service';
+import { APP_TOKENS } from '../../container/tokens';
+import { UserEntity } from '../../domains/user/user.entity';
+import { UserService } from '../../domains/user/user.service';
 import { CommonTemplate } from '../templates/common-template';
-import { TG_TRIGGERS } from '../telegram-bot/telegram-bot-triggers';
+import { TG_TRIGGERS } from '../telegram-bot-triggers';
 import { TelegramBotHandler } from '../common/telegram-bot-handler/telegram-bot-handler';
 
 @injectable()

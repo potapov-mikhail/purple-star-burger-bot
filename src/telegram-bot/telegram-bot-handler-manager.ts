@@ -2,11 +2,11 @@ import { inject, injectable } from 'inversify';
 import { Update } from 'telegraf/typings/core/types/typegram';
 import { Middleware, Context, Composer, Scenes } from 'telegraf';
 import { APP_TOKENS } from '../container/tokens';
-import { CommonHandler } from '../handlers/common-handler';
-import { CatalogHandler } from '../handlers/catalog-handler';
-import { ProfileHandler } from '../handlers/profile-handler';
-import { AddAddressScene } from '../scenes/address-handler';
-import { ITgHandler, ITgContext } from '../common/telegram-bot.interface';
+import { CommonHandler } from './handlers/common-handler';
+import { CatalogHandler } from './handlers/catalog-handler';
+import { ProfileHandler } from './handlers/profile-handler';
+import { AddAddressScene } from './scenes/add-address-scene';
+import { ITgContext, ITgHandler } from './common/telegram-bot.interface';
 
 @injectable()
 export class TelegramBotHandlerManager implements ITgHandler {

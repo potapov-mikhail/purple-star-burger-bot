@@ -1,6 +1,6 @@
 import { Markup } from 'telegraf';
-import { IPagination } from '../services/product.service';
-import { ProductEntity } from '../entities/product.entity';
+import { IPagination } from '../../domains/product/product.service';
+import { ProductEntity } from '../../domains/product/product.entity';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
 

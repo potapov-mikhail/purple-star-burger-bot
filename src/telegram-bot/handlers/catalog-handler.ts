@@ -1,15 +1,15 @@
 import { ProductCategory } from '@prisma/client';
 import { inject, injectable } from 'inversify';
-import { APP_TOKENS } from '../container/tokens';
+import { APP_TOKENS } from '../../container/tokens';
 import { TGNotFound } from '../errors/tg-not-found';
-import { ProductService } from '../services/product.service';
+import { ProductService } from '../../domains/product/product.service';
 import { MarkupTemplate } from '../templates/markup-template';
 import { ProductTemplate } from '../templates/catalog-template';
-import { ILoggerService } from '../common/logger/logger.interface';
-import { TG_TRIGGERS } from '../telegram-bot/telegram-bot-triggers';
+import { ILoggerService } from '../../common/logger/logger.interface';
+import { TG_TRIGGERS } from '../telegram-bot-triggers';
 import { ExtraEditMessageText } from 'telegraf/typings/telegram-types';
-import { ITelegramBotExtraView } from '../common/telegram-bot.interface';
 import { TelegramBotHandler } from '../common/telegram-bot-handler/telegram-bot-handler';
+import { ITelegramBotExtraView } from '../common/telegram-bot.interface';
 
 @injectable()
 export class CatalogHandler extends TelegramBotHandler {
