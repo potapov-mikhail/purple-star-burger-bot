@@ -2,34 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import { inject, injectable } from 'inversify';
 import { APP_TOKENS } from '../../container/tokens';
 import { IConfigService } from '../../common/config/config.interface';
-
-interface ILocation {
-	latitude: number;
-	longitude: number;
-}
-
-interface IAddress {
-	city: string;
-	street: string;
-	house: string;
-}
-
-interface IData {
-	city?: string;
-	region?: string;
-	street?: string;
-	house?: string;
-}
-
-interface ISuggestion {
-	value: string;
-	unrestricted_value: string;
-	data: IData;
-}
-
-interface ILocationResponse {
-	suggestions: ISuggestion[];
-}
+import { IDDAddress, IDDData, IDDLocation, IDDLocationResponse } from './dadata.interface';
 
 @injectable()
 export class DaDataService {
@@ -50,13 +23,13 @@ export class DaDataService {
 		});
 	}
 
-	async getAddressByLocation(location: ILocation): Promise<IAddress | null> {
+	async getAddressByLocation(location: IDDLocation): Promise<IDDAddress | null> {
 		const url = 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address';
 		const payload = { lat: location.latitude, lon: location.longitude };
 
 		try {
 			const response = await this.request.post(url, payload);
-			const body: ILocationResponse = await response.data;
+			const body: IDDLocationResponse = await response.data;
 			const [{ data }] = body.suggestions;
 			return this.parseAddress(data);
 		} catch (e) {
@@ -64,7 +37,7 @@ export class DaDataService {
 		}
 	}
 
-	async getAddressFromString(source: string): Promise<IAddress | null> {
+	async getAddressFromString(source: string): Promise<IDDAddress | null> {
 		const url = 'https://cleaner.dadata.ru/api/v1/clean/address';
 		const payload = [source];
 
@@ -72,14 +45,14 @@ export class DaDataService {
 			const response = await this.request.post(url, payload, {
 				headers: { 'X-Secret': this.secret },
 			});
-			const body: IData[] = await response.data;
+			const body: IDDData[] = await response.data;
 			return this.parseAddress(body[0]);
 		} catch (e) {
 			return null;
 		}
 	}
 
-	private parseAddress(data: IData): IAddress | null {
+	private parseAddress(data: IDDData): IDDAddress | null {
 		const params = {
 			city: data.city || data.region,
 			street: data.street,
@@ -88,6 +61,6 @@ export class DaDataService {
 
 		const isNotEmpty = Object.values(params).every(Boolean);
 
-		return isNotEmpty ? (params as IAddress) : null;
+		return isNotEmpty ? (params as IDDAddress) : null;
 	}
 }
