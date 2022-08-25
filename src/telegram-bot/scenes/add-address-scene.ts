@@ -3,14 +3,17 @@ import { inject, injectable } from 'inversify';
 import { APP_TOKENS } from '../../container/tokens';
 import { DaDataService } from '../../domains/dadata/dadata.service';
 import { UserService } from '../../domains/user/user.service';
-import { TG_SCENES } from '../telegram-bot-triggers';
+import { TG_SCENES, TG_TRIGGERS } from '../telegram-bot-triggers';
 import { CommonTemplate } from '../templates/common-template';
 import { TelegramBotSceneHandler } from '../common/telegram-bot-scene-handler/telegram-bot-scene-handler';
 import { ITgContext } from '../common/telegram-bot.interface';
 import { ConflictException } from '../../common/exceptions/exceptions';
 import { TGError } from '../errors/tg-error.class';
+import { ProfileTemplate } from '../templates/profile-template';
+import { IDDAddress } from '../../domains/dadata/dadata.interface';
 
 interface IState {
+	unverifiedAddress?: IDDAddress;
 	waitEnterAddress: boolean;
 }
 
@@ -32,6 +35,11 @@ export class AddAddressScene extends TelegramBotSceneHandler {
 		[{ text: CANCEL_BUTTON }, { text: REQUEST_FOR_CALL_BUTTON }],
 	]).resize();
 
+	private locationConfirmMarkup = Markup.inlineKeyboard([
+		{ text: 'Да', callback_data: `${TG_TRIGGERS.ConfirmAddress}` },
+		{ text: 'Нет', callback_data: TG_TRIGGERS.RejectAddress },
+	]);
+
 	constructor(
 		@inject(APP_TOKENS.DaDataService) readonly daDataService: DaDataService,
 		@inject(APP_TOKENS.UserService) readonly userService: UserService,
@@ -48,7 +56,7 @@ export class AddAddressScene extends TelegramBotSceneHandler {
 		});
 
 		this.scene.hears(MANUAL_BUTTON, async (ctx) => {
-			this.setState<IState>(ctx, { waitEnterAddress: true });
+			this.patchState<IState>(ctx, { waitEnterAddress: true });
 			await ctx.deleteMessage(ctx.message?.message_id);
 			await ctx.reply(
 				'Введите пожалуйста ваш адрес.\nВ формате: г.Москва, ул.Моховая, д.15',
@@ -63,7 +71,32 @@ export class AddAddressScene extends TelegramBotSceneHandler {
 
 		this.scene.on('location', async (ctx) => {
 			const address = await this.daDataService.getAddressByLocation(ctx.message.location);
-			await this.createAddress(ctx, address);
+
+			if (address) {
+				this.patchState<IState>(ctx, { unverifiedAddress: address });
+				await ctx.reply(
+					`Это ваш адрес? \n ${ProfileTemplate.getAddress(address)}`,
+					this.locationConfirmMarkup,
+				);
+			} else {
+				await this.createAddress(ctx, address);
+			}
+		});
+
+		this.scene.action(TG_TRIGGERS.ConfirmAddress, async (ctx) => {
+			const { unverifiedAddress } = this.getState<IState>(ctx) || {};
+
+			if (unverifiedAddress) {
+				await this.createAddress(ctx, unverifiedAddress);
+			} else {
+				await ctx.reply('Не удалось подтвердить адрес');
+			}
+		});
+
+		this.scene.action(TG_TRIGGERS.RejectAddress, async (ctx) => {
+			this.patchState<IState>(ctx, { unverifiedAddress: undefined });
+			await ctx.deleteMessage();
+			await ctx.reply('☹️ Вы можете попробовать еще раз или ввести адрес вручную');
 		});
 
 		this.scene.on('text', async (ctx) => {
@@ -92,6 +125,7 @@ export class AddAddressScene extends TelegramBotSceneHandler {
 
 		try {
 			await this.userService.createUserAddressByTgId(ctx.from!.id, address);
+			this.patchState<IState>(ctx, { unverifiedAddress: undefined });
 		} catch (e) {
 			if (e instanceof ConflictException) {
 				throw new TGError('🤨 Этот адрес уже добавлен');

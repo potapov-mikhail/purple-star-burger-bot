@@ -8,6 +8,8 @@ export const TG_TRIGGERS = {
 	Start: 'start',
 	Profile: 'profile',
 	AddAddress: 'addaddress',
+	ConfirmAddress: 'onConfirmAddress',
+	RejectAddress: 'onRejectAddress',
 	BurgerList: 'burgers',
 	BurgerCard: { prefix: 'burger', pattern: /burger+[0-9]*/ },
 	BurgerChangePage: { prefix: 'onChangeBurgersPage', pattern: /onChangeBurgersPage-+[0-9]*/ },

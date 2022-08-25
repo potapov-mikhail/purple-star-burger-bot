@@ -19,12 +19,12 @@ export class TelegramBotSceneHandler implements ITelegramBotSceneHandler {
 		Object.assign(ctx.scene.session.state, state);
 	}
 
-	patchState<T>(ctx: ITgContext, path: T): void {
+	patchState<T>(ctx: ITgContext, part: Partial<T>): void {
 		if (typeof ctx.scene.session.state !== 'object') {
 			ctx.scene.session.state = {};
 		}
 
-		Object.assign(ctx.scene.session.state, { ...ctx.scene.session.state, ...path });
+		Object.assign(ctx.scene.session.state, { ...ctx.scene.session.state, ...part });
 	}
 
 	getState<T>(ctx: ITgContext): T | undefined {
