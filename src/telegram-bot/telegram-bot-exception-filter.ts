@@ -17,7 +17,7 @@ export class ExceptionFilter implements ITgExceptionFilter {
 		} else {
 			const unknownMessage = (err as Error)?.message ?? 'Catch unknown error';
 			this.loggerService.error(unknownMessage);
-			ctx.reply('Упс! Что то пошло не так');
+			ctx.reply('☹️ Упс! Что то пошло не так');
 		}
 	}
 }

@@ -1,6 +1,5 @@
 import { Markup } from 'telegraf';
 import { inject, injectable } from 'inversify';
-
 import { APP_TOKENS } from '../../container/tokens';
 import { DaDataService } from '../../domains/dadata/dadata.service';
 import { UserService } from '../../domains/user/user.service';
@@ -8,6 +7,8 @@ import { TG_SCENES } from '../telegram-bot-triggers';
 import { CommonTemplate } from '../templates/common-template';
 import { TelegramBotSceneHandler } from '../common/telegram-bot-scene-handler/telegram-bot-scene-handler';
 import { ITgContext } from '../common/telegram-bot.interface';
+import { ConflictException } from '../../common/exceptions/exceptions';
+import { TGError } from '../errors/tg-error.class';
 
 interface IState {
 	waitEnterAddress: boolean;
@@ -89,7 +90,15 @@ export class AddAddressScene extends TelegramBotSceneHandler {
 			return;
 		}
 
-		await this.userService.createUserAddressByTgId(ctx.from!.id, address);
+		try {
+			await this.userService.createUserAddressByTgId(ctx.from!.id, address);
+		} catch (e) {
+			if (e instanceof ConflictException) {
+				throw new TGError('🤨 Этот адрес уже добавлен');
+			}
+			throw e;
+		}
+
 		await this.leaveAndRemove(ctx, '😉 Вы успешно добавили новый адрес!');
 	}
 }

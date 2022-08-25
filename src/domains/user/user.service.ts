@@ -4,6 +4,7 @@ import { APP_TOKENS } from '../../container/tokens';
 import { UserEntity } from './user.entity';
 import { AddressEntity } from '../address/address.entity';
 import { IPrismaService } from '../../common/database/prisma.interface';
+import { ConflictException } from '../../common/exceptions/exceptions';
 
 @injectable()
 export class UserService {
@@ -37,7 +38,7 @@ export class UserService {
 		});
 
 		if (existAddress) {
-			throw new Error('Адрес уже существует');
+			throw new ConflictException();
 		}
 
 		return await this.prismaService.client.address.create({
