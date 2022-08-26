@@ -1,17 +1,17 @@
 import 'reflect-metadata';
 import { inject, injectable } from 'inversify';
-import { DI_TOKENS } from '../core/di/tokens';
 import { IApplication } from './app.interface';
-import { IPrismaService } from '../core/database/prisma.interface';
-import { ILoggerService } from '../core/logger/logger.interface';
-import { ITelegramBot } from '../telegram-bot/telegram-bot.interface';
+import { APP_TOKENS } from '../container/tokens';
+import { ILoggerService } from '../common/logger/logger.interface';
+import { IPrismaService } from '../common/database/prisma.interface';
+import { ITelegramBot } from '../telegram-bot/common/telegram-bot.interface';
 
 @injectable()
 export class Application implements IApplication {
 	constructor(
-		@inject(DI_TOKENS.TelegramBot) private readonly telegramBot: ITelegramBot,
-		@inject(DI_TOKENS.LoggerService) private readonly loggerService: ILoggerService,
-		@inject(DI_TOKENS.PrismaService) private readonly prismaService: IPrismaService,
+		@inject(APP_TOKENS.TelegramBot) private readonly telegramBot: ITelegramBot,
+		@inject(APP_TOKENS.LoggerService) private readonly loggerService: ILoggerService,
+		@inject(APP_TOKENS.PrismaService) private readonly prismaService: IPrismaService,
 	) {
 		this.loggerService.setPrefix(this.constructor.name);
 	}
