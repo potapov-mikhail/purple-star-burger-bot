@@ -23,7 +23,15 @@ export interface ITelegramBotExtraView {
 	extra: ExtraReplyMessage;
 }
 
+export interface ITgProductCartState {
+	productCart: ITgProductCart;
+}
+
+export interface ITgProductCart {
+	items: Record<number, number>;
+}
+
 export interface ITgContext extends Context {
-	session: Scenes.SceneSession<Scenes.SceneSessionData>;
+	session: Scenes.SceneSession<Scenes.SceneSessionData> & ITgProductCartState;
 	scene: Scenes.SceneContextScene<ITgContext, Scenes.SceneSessionData>;
 }

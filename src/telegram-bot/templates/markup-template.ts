@@ -1,4 +1,5 @@
 import { Markup } from 'telegraf';
+import { TG_TRIGGERS } from '../telegram-bot-triggers';
 import { IPagination } from '../../domains/product/product.service';
 import { ProductEntity } from '../../domains/product/product.entity';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
@@ -23,8 +24,21 @@ export abstract class MarkupTemplate {
 		return Markup.inlineKeyboard([buttons]);
 	}
 
-	static getProductOptions(product: ProductEntity): ExtraReplyMessage {
-		const buttons = [{ text: `Добавить в корзину`, callback_data: `addToCart-${product.id}` }];
+	static getProductOptions(product: ProductEntity, count: number): ExtraReplyMessage {
+		const buttons = [
+			{
+				text: `Добавить в корзину` + (count ? ` (${count})` : ''),
+				callback_data: `${TG_TRIGGERS.AddToCart.prefix}-${product.id}`,
+			},
+		];
+
+		if (count) {
+			buttons.push({
+				text: `Удалить из корзины`,
+				callback_data: `${TG_TRIGGERS.DeleteFromCart.prefix}-${product.id}`,
+			});
+		}
+
 		return Markup.inlineKeyboard([buttons]);
 	}
 }

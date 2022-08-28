@@ -22,6 +22,10 @@ export class ProductService {
 		return this.prismaService.client.product.findUnique({ where: { id } });
 	}
 
+	async getProductsByIds(ids: number[]): Promise<Product[]> {
+		return this.prismaService.client.product.findMany({ where: { id: { in: ids } } });
+	}
+
 	async getProductsByCategory(
 		category: ProductCategory,
 		page: number,

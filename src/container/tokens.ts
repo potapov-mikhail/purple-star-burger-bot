@@ -14,7 +14,9 @@ export const APP_TOKENS = {
 	CommonHandler: Symbol.for('CommonHandler'),
 	CatalogHandler: Symbol.for('CatalogHandler'),
 	ProfileHandler: Symbol.for('ProfileHandler'),
+	CartHandler: Symbol.for('CartHandler'),
 	AddAddressScene: Symbol.for('AddAddressScene'),
 	ProfileService: Symbol.for('ProfileService'),
 	ExceptionFilter: Symbol.for('ExceptionFilter'),
+	TgCartService: Symbol.for('TgCartService'),
 };
