@@ -41,4 +41,8 @@ export abstract class MarkupTemplate {
 
 		return Markup.inlineKeyboard([buttons]);
 	}
+
+	static getCartOptions(): ExtraReplyMessage {
+		return Markup.inlineKeyboard([{ text: 'Оплатить', callback_data: 'onPay' }]);
+	}
 }
