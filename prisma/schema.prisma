@@ -41,3 +41,20 @@ model Address {
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
 }
+
+enum OrderStatus {
+  Created
+  Approved
+  Paid
+  Canceled
+  Failed
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  data      Json
+  price     Int
+  status    OrderStatus @default(Created)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}

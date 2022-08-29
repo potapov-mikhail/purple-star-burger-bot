@@ -17,6 +17,7 @@ export const TG_TRIGGERS = {
 	DrinkCard: { prefix: 'drink', pattern: /drink+[0-9]*/ },
 	DrinkChangePage: { prefix: 'onChangeDrinksPage', pattern: /onChangeDrinksPage-+[0-9]*/ },
 	Cart: 'cart',
+	Pay: { prefix: 'onPay', pattern: 'onPay' },
 	AddToCart: { prefix: 'onAddToCart', pattern: /onAddToCart+[0-9]*/ },
 	DeleteFromCart: { prefix: 'onDeleteFromCart', pattern: /onDeleteFromCart+[0-9]*/ },
 };

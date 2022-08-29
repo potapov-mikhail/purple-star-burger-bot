@@ -43,6 +43,6 @@ export abstract class MarkupTemplate {
 	}
 
 	static getCartOptions(): ExtraReplyMessage {
-		return Markup.inlineKeyboard([{ text: 'Оплатить', callback_data: 'onPay' }]);
+		return Markup.inlineKeyboard([{ text: 'Оплатить', callback_data: TG_TRIGGERS.Pay.prefix }]);
 	}
 }

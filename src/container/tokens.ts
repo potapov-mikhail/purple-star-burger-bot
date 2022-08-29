@@ -6,7 +6,7 @@ export const APP_TOKENS = {
 	Application: Symbol.for('Application'),
 	UserService: Symbol.for('UserService'),
 	ProductService: Symbol.for('ProductService'),
-	CatalogService: Symbol.for('CatalogService'),
+	OrderService: Symbol.for('OrderService'),
 	DaDataService: Symbol.for('DaDataService'),
 
 	TelegramBot: Symbol.for('TelegramBot'),

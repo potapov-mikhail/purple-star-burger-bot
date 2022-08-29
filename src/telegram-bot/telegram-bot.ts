@@ -2,7 +2,6 @@ import { Telegraf } from 'telegraf';
 import { inject, injectable } from 'inversify';
 import LocalSession from 'telegraf-session-local';
 import { APP_TOKENS } from '../container/tokens';
-import { CommonTemplate } from './templates/common-template';
 import { TELEGRAM_BOT_COMMANDS } from './telegram-bot-triggers';
 import { IConfigService } from '../common/config/config.interface';
 import { ILoggerService } from '../common/logger/logger.interface';
@@ -13,11 +12,13 @@ import {
 	ITgContext,
 	ITgExceptionFilter,
 } from './common/telegram-bot.interface';
+import { CommonTemplate } from './templates/common-template';
 
 const REQUIRED_ENV_VARS = [
 	'DATABASE_URL',
 	'TG_BOT_TOKEN',
 	'TG_SESSION_DB',
+	'TG_PROVIDER_TOKEN',
 	'DADATA_TOKEN',
 	'DADATA_SECRET',
 ];

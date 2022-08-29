@@ -26,6 +26,7 @@ import {
 } from '../telegram-bot/common/telegram-bot.interface';
 import { TgCartService } from '../telegram-bot/services/cart-store.service';
 import { CartHandler } from '../telegram-bot/handlers/cart-handler';
+import { OrderService } from '../domains/order/order.service';
 
 export const DI_APP_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IApplication>(APP_TOKENS.Application).to(Application);
@@ -44,4 +45,5 @@ export const DI_APP_BINDINGS = new ContainerModule((bind: interfaces.Bind) => {
 	bind<ITgExceptionFilter>(APP_TOKENS.ExceptionFilter).to(ExceptionFilter).inSingletonScope();
 	bind<TgCartService>(APP_TOKENS.TgCartService).to(TgCartService).inSingletonScope();
 	bind<CartHandler>(APP_TOKENS.CartHandler).to(CartHandler).inSingletonScope();
+	bind<OrderService>(APP_TOKENS.OrderService).to(OrderService).inSingletonScope();
 });
