@@ -12,6 +12,8 @@ import { TelegramBotHandler } from '../common/telegram-bot-handler/telegram-bot-
 import { ITelegramBotExtraView, ITgContext } from '../common/telegram-bot.interface';
 import { TgCartService } from '../services/cart-store.service';
 
+type ProductListType = ProductCategory | undefined;
+
 @injectable()
 export class CatalogHandler extends TelegramBotHandler {
 	constructor(
@@ -22,22 +24,32 @@ export class CatalogHandler extends TelegramBotHandler {
 		super();
 		this.loggerService.setPrefix(this.constructor.name);
 
+		this.composer.command(TG_TRIGGERS.Search, async (ctx) => {
+			const query = ctx.message.text.replace(`/${TG_TRIGGERS.Search}`, '').trim();
+			const { template, extra } = await this.getProductListView({ query });
+			await ctx.reply(template, extra);
+		});
+
 		this.composer.command(TG_TRIGGERS.BurgerList, async (ctx) => {
-			const { template, extra } = await this.getProductListView('Burger', 1);
+			const { template, extra } = await this.getProductListView({ type: 'Burger' });
 			await ctx.reply(template, extra);
 		});
 
 		this.composer.command(TG_TRIGGERS.DrinkList, async (ctx) => {
-			const { template, extra } = await this.getProductListView('Drink', 1);
+			const { template, extra } = await this.getProductListView({ type: 'Drink' });
 			await ctx.reply(template, extra);
 		});
 
 		this.composer.action(
-			[TG_TRIGGERS.BurgerChangePage.pattern, TG_TRIGGERS.DrinkChangePage.pattern],
+			[
+				TG_TRIGGERS.BurgerChangePage.pattern,
+				TG_TRIGGERS.DrinkChangePage.pattern,
+				TG_TRIGGERS.SearchChangePage.pattern,
+			],
 			async (ctx) => {
 				if (ctx.callbackQuery.data) {
-					const { type, page } = this.getProductListParams(ctx.callbackQuery.data);
-					const { template, extra } = await this.getProductListView(type, page);
+					const { type, page, query } = this.getProductListParams(ctx.callbackQuery.data);
+					const { template, extra } = await this.getProductListView({ type, page, query });
 					await ctx.editMessageText(template, extra as ExtraEditMessageText);
 				}
 			},
@@ -69,11 +81,44 @@ export class CatalogHandler extends TelegramBotHandler {
 		});
 	}
 
-	async getProductListView(type: ProductCategory, page: number): Promise<ITelegramBotExtraView> {
-		const { items, pagination } = await this.productService.getProductsByCategory(type, page);
-		const trigger = type === 'Burger' ? TG_TRIGGERS.BurgerChangePage : TG_TRIGGERS.DrinkChangePage;
+	async getProductListView({
+		type,
+		page,
+		query,
+	}: {
+		type?: ProductListType;
+		page?: number;
+		query?: string;
+	}): Promise<ITelegramBotExtraView> {
+		page = page ?? 1;
+		query = query ?? undefined;
+
+		const { items, pagination } = await this.productService.findProducts({
+			category: type,
+			page,
+			query,
+		});
+
+		let trigger;
+
+		switch (type) {
+			case 'Burger': {
+				trigger = TG_TRIGGERS.BurgerChangePage;
+				break;
+			}
+
+			case 'Drink': {
+				trigger = TG_TRIGGERS.DrinkChangePage;
+				break;
+			}
+
+			default: {
+				trigger = TG_TRIGGERS.SearchChangePage;
+			}
+		}
+
 		const template = ProductTemplate.getProductList(items);
-		const extra = MarkupTemplate.getPagination(pagination, trigger.prefix);
+		const extra = MarkupTemplate.getPagination(pagination, trigger.prefix, query);
 		return { template, extra: { ...extra, parse_mode: 'Markdown' } };
 	}
 
@@ -89,10 +134,27 @@ export class CatalogHandler extends TelegramBotHandler {
 		return Number.isInteger(id) ? id : null;
 	}
 
-	private getProductListParams(str: string): { page: number; type: ProductCategory } {
-		const [prefix, page] = str.split('-');
-		const type = prefix === TG_TRIGGERS.BurgerChangePage.prefix ? 'Burger' : 'Drink';
-		return { type, page: Number(page) };
+	private getProductListParams(str: string): {
+		page: number;
+		type: ProductCategory | undefined;
+		query?: string;
+	} {
+		const [prefix, page, query] = str.split('-');
+		let type: ProductCategory | undefined;
+
+		switch (prefix) {
+			case TG_TRIGGERS.BurgerChangePage.prefix: {
+				type = 'Burger';
+				break;
+			}
+
+			case TG_TRIGGERS.DrinkChangePage.prefix: {
+				type = 'Drink';
+				break;
+			}
+		}
+
+		return { type, page: Number(page), query };
 	}
 
 	private async getProductFromParamsOrThrow(ctx: ITgContext, match: string): Promise<Product> {

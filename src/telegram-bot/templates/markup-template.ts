@@ -6,8 +6,8 @@ import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
 
 export abstract class MarkupTemplate {
-	static getPagination(pagination: IPagination, prefix: string): ExtraReplyMessage {
-		const buttons: InlineKeyboardButton[] = [];
+	static getPagination(pagination: IPagination, prefix: string, query?: string): ExtraReplyMessage {
+		const buttons: InlineKeyboardButton.CallbackButton[] = [];
 
 		if (pagination.total === 0) {
 			return Markup.inlineKeyboard(buttons);
@@ -19,6 +19,12 @@ export abstract class MarkupTemplate {
 
 		if (pagination.page !== pagination.total) {
 			buttons.push({ text: 'Вперед >', callback_data: `${prefix}-${pagination.page + 1}` });
+		}
+
+		if (query) {
+			buttons.forEach((btn) => {
+				btn.callback_data = `${btn.callback_data}-${query}`;
+			});
 		}
 
 		return Markup.inlineKeyboard([buttons]);
